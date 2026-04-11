@@ -19,8 +19,8 @@ const SENSITIVE_PATTERNS = [
   /docker\s+login/,
   // AWS credentials
   /aws\s+(?:configure|sts)/,
-  // Base64-encoded strings (likely secrets)
-  /[A-Za-z0-9+/]{40,}={0,2}/,
+  // Base64-encoded strings (likely secrets) — require trailing = padding to avoid matching file paths
+  /(?:^|[\s='"])(?:[A-Za-z0-9+/]{40,}={1,2})(?:[\s'")]|$)/,
 ];
 
 /** Commands that should never be logged */

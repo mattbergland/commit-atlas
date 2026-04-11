@@ -19,7 +19,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, appendFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -56,16 +56,56 @@ function readEvents(): StoredEvent[] {
   ensureConfigDir();
   if (!existsSync(EVENTS_FILE)) return [];
   try {
-    return JSON.parse(readFileSync(EVENTS_FILE, "utf-8")) as StoredEvent[];
+    const raw = readFileSync(EVENTS_FILE, "utf-8").trim();
+    if (!raw) return [];
+    // Support both JSONL (one object per line) and legacy JSON array format
+    if (raw.startsWith("[")) {
+      return JSON.parse(raw) as StoredEvent[];
+    }
+    return raw.split("\n").filter(Boolean).map((line) => JSON.parse(line) as StoredEvent);
   } catch {
     return [];
   }
 }
 
 function addEvent(event: StoredEvent): void {
-  const events = readEvents();
-  events.push(event);
-  writeFileSync(EVENTS_FILE, JSON.stringify(events, null, 2));
+  ensureConfigDir();
+  appendFileSync(EVENTS_FILE, JSON.stringify(event) + "\n");
+}
+
+// Privacy filtering (self-contained to avoid cross-package deps)
+const SENSITIVE_PATTERNS_MCP = [
+  /(?:export\s+)?(?:[\w]+(?:TOKEN|SECRET|KEY|PASSWORD|PASS|PWD|CREDENTIAL|AUTH|API_KEY|ACCESS_KEY|PRIVATE_KEY))\s*=/i,
+  /--(?:token|password|secret|key|auth|credential|api-key|access-key)\s+\S+/i,
+  /-H\s+["']?Authorization:\s+(?:Bearer|Basic|Token)\s+\S+/i,
+  /ssh-(?:keygen|add|copy-id)/,
+  /gpg\s+--(?:import|export|sign)/,
+  /docker\s+login/,
+  /aws\s+(?:configure|sts)/,
+];
+
+const BLOCKED_COMMANDS_MCP = [
+  "passwd", "su ", "sudo -S", "mysql -p", "psql -W",
+  "vault ", "1password", "op ", "keychain",
+];
+
+function sanitizeCommandMcp(command: string): string {
+  const trimmed = command.trim();
+  if (!trimmed) return "";
+  const lower = trimmed.toLowerCase();
+  for (const blocked of BLOCKED_COMMANDS_MCP) {
+    if (lower.startsWith(blocked)) return "[FILTERED]";
+  }
+  for (const pattern of SENSITIVE_PATTERNS_MCP) {
+    if (pattern.test(trimmed)) {
+      // Mask sensitive values instead of dropping
+      return trimmed
+        .replace(/((?:[\w]+(?:TOKEN|SECRET|KEY|PASSWORD|PASS|PWD|CREDENTIAL|AUTH|API_KEY|ACCESS_KEY|PRIVATE_KEY))\s*=\s*)(\S+)/gi, "$1***")
+        .replace(/(--(?:token|password|secret|key|auth|credential|api-key|access-key|private-key)\s+)\S+/gi, "$1***")
+        .replace(/(Authorization:\s+(?:Bearer|Basic|Token)\s+)\S+/gi, "$1***");
+    }
+  }
+  return trimmed;
 }
 
 function generateId(): string {
@@ -282,7 +322,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         branch: typedArgs.branch,
         actor: "human",
         eventType: "command",
-        command: typedArgs.command,
+        command: sanitizeCommandMcp(typedArgs.command),
         commandCategory: typedArgs.category,
         durationMs: typedArgs.durationMs,
         metadata: typedArgs.exitCode !== undefined

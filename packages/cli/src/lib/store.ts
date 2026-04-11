@@ -3,7 +3,7 @@
  * Events and config are stored in ~/.commit-atlas/
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -111,24 +111,28 @@ export function readEvents(): StoredEvent[] {
     return [];
   }
   try {
-    const raw = readFileSync(EVENTS_FILE, "utf-8");
-    return JSON.parse(raw) as StoredEvent[];
+    const raw = readFileSync(EVENTS_FILE, "utf-8").trim();
+    if (!raw) return [];
+    // Support both JSONL (one object per line) and legacy JSON array format
+    if (raw.startsWith("[")) {
+      return JSON.parse(raw) as StoredEvent[];
+    }
+    return raw.split("\n").filter(Boolean).map((line) => JSON.parse(line) as StoredEvent);
   } catch {
     return [];
   }
 }
 
-/** Add an event to the local store */
+/** Add an event to the local store (append-only JSONL for concurrency safety) */
 export function addEvent(event: StoredEvent): void {
-  const events = readEvents();
-  events.push(event);
-  writeFileSync(EVENTS_FILE, JSON.stringify(events, null, 2));
+  ensureConfigDir();
+  appendFileSync(EVENTS_FILE, JSON.stringify(event) + "\n");
 }
 
 /** Clear all stored events */
 export function clearEvents(): void {
   ensureConfigDir();
-  writeFileSync(EVENTS_FILE, "[]");
+  writeFileSync(EVENTS_FILE, "");
 }
 
 /** Generate a unique event ID */
