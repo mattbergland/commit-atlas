@@ -252,6 +252,14 @@ export async function GET(request: NextRequest) {
     });
   }
 
+  // Validate username format to prevent path traversal
+  if (!/^[a-zA-Z0-9](?:[a-zA-Z0-9]|-(?=[a-zA-Z0-9])){0,38}$/.test(username)) {
+    return NextResponse.json<GitHubApiResponse>({
+      success: false,
+      error: "Invalid GitHub username format",
+    });
+  }
+
   const year = yearParam ? parseInt(yearParam) : new Date().getFullYear();
   const month = monthParam ? parseInt(monthParam) : undefined;
   const token = process.env.GITHUB_TOKEN;

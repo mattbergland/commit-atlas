@@ -58,8 +58,8 @@ export function filterByMonth(
   month: number
 ): ContributionDay[] {
   return days.filter((d) => {
-    const date = new Date(d.date);
-    return date.getFullYear() === year && date.getMonth() + 1 === month;
+    const [y, m] = d.date.split('-').map(Number);
+    return y === year && m === month;
   });
 }
 
@@ -69,8 +69,8 @@ export function filterByYear(
   year: number
 ): ContributionDay[] {
   return days.filter((d) => {
-    const date = new Date(d.date);
-    return date.getFullYear() === year;
+    const [y] = d.date.split('-').map(Number);
+    return y === year;
   });
 }
 

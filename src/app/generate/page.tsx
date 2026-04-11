@@ -207,7 +207,7 @@ function GeneratePageInner() {
       </header>
 
       {/* Loading state */}
-      {loading && !hasFetched && (
+      {loading && !githubData && (
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center space-y-4">
             <Loader2 className="w-8 h-8 animate-spin mx-auto text-muted-foreground" />
