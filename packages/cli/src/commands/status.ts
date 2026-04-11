@@ -95,8 +95,8 @@ export async function statusCommand(options: StatusOptions): Promise<void> {
 
   // Date range
   const timestamps = events.map((e) => new Date(e.timestamp).getTime());
-  const earliest = new Date(Math.min(...timestamps));
-  const latest = new Date(Math.max(...timestamps));
+  const earliest = new Date(timestamps.reduce((a, b) => Math.min(a, b)));
+  const latest = new Date(timestamps.reduce((a, b) => Math.max(a, b)));
   console.log(
     chalk.dim(
       `    Date range:     ${earliest.toLocaleDateString()} – ${latest.toLocaleDateString()}`

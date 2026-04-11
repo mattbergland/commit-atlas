@@ -7,7 +7,6 @@ type AgentSource = "claude_code" | "devin" | "cursor" | "windsurf";
 
 /** Environment variable indicators for agents */
 const ENV_INDICATORS: { key: string; agent: AgentSource }[] = [
-  { key: "ANTHROPIC_API_KEY", agent: "claude_code" },
   { key: "CLAUDE_CODE", agent: "claude_code" },
   { key: "CLAUDE_SESSION", agent: "claude_code" },
   { key: "CURSOR_SESSION", agent: "cursor" },

@@ -43,7 +43,6 @@ const AGENT_COMMAND_PATTERNS: { pattern: RegExp; agent: ActivitySource }[] = [
 
 /** Known agent environment variable indicators */
 const AGENT_ENV_INDICATORS: { key: string; agent: ActivitySource }[] = [
-  { key: "ANTHROPIC_API_KEY", agent: "claude_code" },
   { key: "CLAUDE_CODE", agent: "claude_code" },
   { key: "CURSOR_SESSION", agent: "cursor" },
   { key: "CURSOR_TRACE_ID", agent: "cursor" },
