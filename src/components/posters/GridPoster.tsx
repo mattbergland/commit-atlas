@@ -194,7 +194,7 @@ export default function GridPoster({ data, config }: GridPosterProps) {
 
       {/* Day of week labels */}
       <g>
-        {["M", "", "W", "", "F", "", ""].map((label, i) => (
+        {["", "M", "", "W", "", "F", ""].map((label, i) => (
           <text
             key={`dow-${i}`}
             x={offsetX - 12}

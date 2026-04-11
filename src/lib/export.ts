@@ -30,6 +30,7 @@ export async function exportToPng(
     style: {
       width: `${dims.width}px`,
       height: `${dims.height}px`,
+      maxWidth: "none",
     },
   });
 
@@ -55,6 +56,7 @@ export async function exportToPdf(
     style: {
       width: `${dims.width}px`,
       height: `${dims.height}px`,
+      maxWidth: "none",
     },
   });
 
