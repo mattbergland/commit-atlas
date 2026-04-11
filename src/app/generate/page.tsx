@@ -11,7 +11,7 @@ import {
 } from "@/types/github";
 import { PALETTES } from "@/lib/palettes";
 import { generateMockData } from "@/lib/mock-data";
-import { filterByMonth } from "@/lib/streaks";
+import { filterByMonth, calculateLongestStreak, calculateCurrentStreak } from "@/lib/streaks";
 import { exportToPng, exportToPdf } from "@/lib/export";
 import PosterRenderer from "@/components/posters/PosterRenderer";
 import PosterControls from "@/components/PosterControls";
@@ -62,6 +62,8 @@ function GeneratePageInner() {
           contributions: filtered,
           totalContributions: filtered.reduce((s, d) => s + d.count, 0),
           activeDays: filtered.filter((d) => d.count > 0).length,
+          longestStreak: calculateLongestStreak(filtered),
+          currentStreak: calculateCurrentStreak(filtered),
           month,
         };
       }
@@ -93,6 +95,8 @@ function GeneratePageInner() {
             contributions: filtered,
             totalContributions: filtered.reduce((s, d) => s + d.count, 0),
             activeDays: filtered.filter((d) => d.count > 0).length,
+            longestStreak: calculateLongestStreak(filtered),
+            currentStreak: calculateCurrentStreak(filtered),
             month,
           };
         }
@@ -111,6 +115,8 @@ function GeneratePageInner() {
             contributions: filtered,
             totalContributions: filtered.reduce((s, d) => s + d.count, 0),
             activeDays: filtered.filter((d) => d.count > 0).length,
+            longestStreak: calculateLongestStreak(filtered),
+            currentStreak: calculateCurrentStreak(filtered),
             month,
           };
         }
