@@ -357,7 +357,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         branch: typedArgs.branch,
         actor: "human",
         eventType: "workflow",
-        command: typedArgs.command,
+        command: typedArgs.command ? sanitizeCommandMcp(typedArgs.command) : undefined,
         commandCategory: typedArgs.buildType,
         durationMs: typedArgs.durationMs,
         metadata: {

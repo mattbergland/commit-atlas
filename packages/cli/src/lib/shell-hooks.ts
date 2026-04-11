@@ -17,6 +17,8 @@ __commit_atlas_last_cmd=""
 __commit_atlas_start_time=""
 
 __commit_atlas_preexec() {
+  # Guard: skip internal function calls triggered by PROMPT_COMMAND
+  case "$1" in __commit_atlas_*) return ;; esac
   __commit_atlas_start_time=$SECONDS
   __commit_atlas_last_cmd="$1"
 }
@@ -31,7 +33,7 @@ __commit_atlas_precmd() {
 
   if [ -n "$__commit_atlas_last_cmd" ]; then
     # Skip if commit-atlas is not installed or tracking is disabled
-    if command -v commit-atlas &>/dev/null; then
+    if command -v commit-atlas >/dev/null 2>&1; then
       commit-atlas log --source cli \\
         --command "$__commit_atlas_last_cmd" \\
         --duration "$duration" \\
