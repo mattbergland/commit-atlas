@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Layers, Grid3X3, Route } from "lucide-react";
+import { Layers, Grid3X3, Route, Map } from "lucide-react";
 
 interface PosterControlsProps {
   config: PosterConfig;
@@ -21,6 +21,7 @@ const VARIANT_OPTIONS: { value: PosterVariant; label: string; icon: React.ReactN
   { value: "horizon", label: "Horizon", icon: <Layers className="w-4 h-4" />, desc: "Layered landscape" },
   { value: "grid", label: "Grid Modern", icon: <Grid3X3 className="w-4 h-4" />, desc: "Geometric blocks" },
   { value: "path", label: "Path", icon: <Route className="w-4 h-4" />, desc: "Journey line" },
+  { value: "atlas", label: "Atlas", icon: <Map className="w-4 h-4" />, desc: "Topographic map" },
 ];
 
 const SIZE_OPTIONS: { value: PosterSize; label: string }[] = [
@@ -47,7 +48,7 @@ export default function PosterControls({
         <Label className="text-xs font-medium tracking-widest uppercase text-muted-foreground">
           Style
         </Label>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-4 gap-2">
           {VARIANT_OPTIONS.map((opt) => (
             <button
               key={opt.value}

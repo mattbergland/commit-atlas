@@ -5,6 +5,7 @@ import { GitHubData, PosterConfig } from "@/types/github";
 import HorizonPoster from "./HorizonPoster";
 import GridPoster from "./GridPoster";
 import PathPoster from "./PathPoster";
+import AtlasPoster from "./AtlasPoster";
 
 interface PosterRendererProps {
   data: GitHubData;
@@ -32,6 +33,7 @@ const PosterRenderer = forwardRef<HTMLDivElement, PosterRendererProps>(
         {variant === "horizon" && <HorizonPoster data={data} config={config} />}
         {variant === "grid" && <GridPoster data={data} config={config} />}
         {variant === "path" && <PathPoster data={data} config={config} />}
+        {variant === "atlas" && <AtlasPoster data={data} config={config} />}
       </div>
     );
   }

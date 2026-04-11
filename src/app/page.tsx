@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { parseUsername } from "@/lib/username";
-import { ArrowRight, Sparkles, Mountain, Grid3X3, Route } from "lucide-react";
+import { ArrowRight, Sparkles, Mountain, Grid3X3, Route, Map } from "lucide-react";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -169,7 +169,7 @@ export default function LandingPage() {
           </button>
 
           {/* Style previews */}
-          <div className="pt-8 grid grid-cols-3 gap-6 max-w-lg mx-auto">
+          <div className="pt-8 grid grid-cols-4 gap-6 max-w-xl mx-auto">
             {[
               {
                 icon: <Mountain className="w-5 h-5" />,
@@ -185,6 +185,11 @@ export default function LandingPage() {
                 icon: <Route className="w-5 h-5" />,
                 label: "Path",
                 desc: "Journey line",
+              },
+              {
+                icon: <Map className="w-5 h-5" />,
+                label: "Atlas",
+                desc: "Topographic map",
               },
             ].map((style) => (
               <div
