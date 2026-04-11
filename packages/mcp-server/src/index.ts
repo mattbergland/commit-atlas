@@ -19,7 +19,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, renameSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -70,14 +70,16 @@ function readEvents(): StoredEvent[] {
 
 function addEvent(event: StoredEvent): void {
   ensureConfigDir();
-  // Migrate legacy JSON array format to JSONL before appending
+  // Migrate legacy JSON array format to JSONL atomically before appending
   if (existsSync(EVENTS_FILE)) {
     try {
       const raw = readFileSync(EVENTS_FILE, "utf-8").trim();
       if (raw.startsWith("[")) {
         const existing = JSON.parse(raw) as StoredEvent[];
         const jsonl = existing.map((e) => JSON.stringify(e)).join("\n") + "\n";
-        writeFileSync(EVENTS_FILE, jsonl);
+        const tmpFile = EVENTS_FILE + ".tmp." + process.pid;
+        writeFileSync(tmpFile, jsonl);
+        renameSync(tmpFile, EVENTS_FILE);
       }
     } catch {
       // If parsing fails, leave file as-is and append
@@ -98,8 +100,8 @@ const SENSITIVE_PATTERNS_MCP = [
 ];
 
 const BLOCKED_COMMANDS_MCP = [
-  "passwd", "su ", "sudo -s", "mysql -p", "psql -w",
-  "vault ", "1password", "op ", "keychain",
+  "passwd", "su", "sudo -s", "mysql -p", "psql -w",
+  "vault", "1password", "op", "keychain",
 ];
 
 function sanitizeCommandMcp(command: string): string {
@@ -107,7 +109,7 @@ function sanitizeCommandMcp(command: string): string {
   if (!trimmed) return "";
   const lower = trimmed.toLowerCase();
   for (const blocked of BLOCKED_COMMANDS_MCP) {
-    if (lower.startsWith(blocked)) return "[FILTERED]";
+    if (lower === blocked || lower.startsWith(blocked + " ")) return "[FILTERED]";
   }
   for (const pattern of SENSITIVE_PATTERNS_MCP) {
     if (pattern.test(trimmed)) {

@@ -26,13 +26,13 @@ const SENSITIVE_PATTERNS = [
 /** Commands that should never be logged */
 const BLOCKED_COMMANDS = [
   "passwd",
-  "su ",
+  "su",
   "sudo -s",
   "mysql -p",
   "psql -w",
-  "vault ",
+  "vault",
   "1password",
-  "op ",
+  "op",
   "keychain",
 ];
 
@@ -73,7 +73,7 @@ export function isSensitiveCommand(command: string): boolean {
 
   // Check blocked commands
   for (const blocked of BLOCKED_COMMANDS) {
-    if (trimmed.startsWith(blocked)) return true;
+    if (trimmed === blocked || trimmed.startsWith(blocked + " ")) return true;
   }
 
   // Check sensitive patterns

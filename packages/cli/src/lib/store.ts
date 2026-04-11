@@ -3,7 +3,7 @@
  * Events and config are stored in ~/.commit-atlas/
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, renameSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -126,14 +126,16 @@ export function readEvents(): StoredEvent[] {
 /** Add an event to the local store (append-only JSONL for concurrency safety) */
 export function addEvent(event: StoredEvent): void {
   ensureConfigDir();
-  // Migrate legacy JSON array format to JSONL before appending
+  // Migrate legacy JSON array format to JSONL atomically before appending
   if (existsSync(EVENTS_FILE)) {
     try {
       const raw = readFileSync(EVENTS_FILE, "utf-8").trim();
       if (raw.startsWith("[")) {
         const existing = JSON.parse(raw) as StoredEvent[];
         const jsonl = existing.map((e) => JSON.stringify(e)).join("\n") + "\n";
-        writeFileSync(EVENTS_FILE, jsonl);
+        const tmpFile = EVENTS_FILE + ".tmp." + process.pid;
+        writeFileSync(tmpFile, jsonl);
+        renameSync(tmpFile, EVENTS_FILE);
       }
     } catch {
       // If parsing fails, leave file as-is and append
