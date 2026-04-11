@@ -367,6 +367,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const agentEvents = events.filter((e) => e.actor === "agent").length;
       const humanEvents = events.filter((e) => e.actor === "human").length;
 
+      const mixedEvents = events.filter((e) => e.actor === "mixed").length;
+      const humanPct = totalEvents > 0
+        ? Math.round(((humanEvents + mixedEvents * 0.5) / totalEvents) * 100)
+        : 0;
+
       const payload = {
         totalEvents,
         commits,
@@ -376,7 +381,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         humanEvents,
         humanAgentRatio:
           totalEvents > 0
-            ? `${Math.round((humanEvents / totalEvents) * 100)}% human / ${Math.round((agentEvents / totalEvents) * 100)}% agent`
+            ? `${humanPct}% human / ${100 - humanPct}% agent`
             : "No data",
         events: events.slice(-100), // Last 100 events
       };

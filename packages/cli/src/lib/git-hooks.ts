@@ -11,7 +11,7 @@ export function generatePostCommitHook(): string {
 # Added by: commit-atlas init
 
 # Skip if commit-atlas CLI is not installed
-if ! command -v commit-atlas &>/dev/null; then
+if ! command -v commit-atlas >/dev/null 2>&1; then
   exit 0
 fi
 

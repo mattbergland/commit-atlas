@@ -130,9 +130,17 @@ async function installGitHooks(
     }
   }
 
-  // Write post-commit hook
+  // Append to existing hook or create new one
   const hookContent = generatePostCommitHook();
-  writeFileSync(postCommitPath, hookContent);
+  if (existsSync(postCommitPath)) {
+    const existing = readFileSync(postCommitPath, "utf-8");
+    console.log(
+      chalk.yellow("    Existing post-commit hook found — appending Commit Atlas hook")
+    );
+    writeFileSync(postCommitPath, existing + "\n\n" + hookContent);
+  } else {
+    writeFileSync(postCommitPath, hookContent);
+  }
   chmodSync(postCommitPath, "755");
 
   config.gitHooksInstalled = true;

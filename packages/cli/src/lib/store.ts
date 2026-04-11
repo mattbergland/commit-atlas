@@ -88,13 +88,13 @@ export function readConfig(): CliConfig {
   ensureConfigDir();
   if (!existsSync(CONFIG_FILE)) {
     writeConfig(DEFAULT_CONFIG);
-    return DEFAULT_CONFIG;
+    return { ...DEFAULT_CONFIG };
   }
   try {
     const raw = readFileSync(CONFIG_FILE, "utf-8");
     return JSON.parse(raw) as CliConfig;
   } catch {
-    return DEFAULT_CONFIG;
+    return { ...DEFAULT_CONFIG };
   }
 }
 
