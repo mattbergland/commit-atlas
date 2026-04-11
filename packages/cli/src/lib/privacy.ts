@@ -18,9 +18,9 @@ const SENSITIVE_PATTERNS = [
 const BLOCKED_COMMANDS = [
   "passwd",
   "su ",
-  "sudo -S",
+  "sudo -s",
   "mysql -p",
-  "psql -W",
+  "psql -w",
   "vault ",
   "1password",
   "op ",

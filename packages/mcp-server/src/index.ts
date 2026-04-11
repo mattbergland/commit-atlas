@@ -85,7 +85,7 @@ const SENSITIVE_PATTERNS_MCP = [
 ];
 
 const BLOCKED_COMMANDS_MCP = [
-  "passwd", "su ", "sudo -S", "mysql -p", "psql -W",
+  "passwd", "su ", "sudo -s", "mysql -p", "psql -w",
   "vault ", "1password", "op ", "keychain",
 ];
 
