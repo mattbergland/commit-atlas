@@ -126,6 +126,19 @@ export function readEvents(): StoredEvent[] {
 /** Add an event to the local store (append-only JSONL for concurrency safety) */
 export function addEvent(event: StoredEvent): void {
   ensureConfigDir();
+  // Migrate legacy JSON array format to JSONL before appending
+  if (existsSync(EVENTS_FILE)) {
+    try {
+      const raw = readFileSync(EVENTS_FILE, "utf-8").trim();
+      if (raw.startsWith("[")) {
+        const existing = JSON.parse(raw) as StoredEvent[];
+        const jsonl = existing.map((e) => JSON.stringify(e)).join("\n") + "\n";
+        writeFileSync(EVENTS_FILE, jsonl);
+      }
+    } catch {
+      // If parsing fails, leave file as-is and append
+    }
+  }
   appendFileSync(EVENTS_FILE, JSON.stringify(event) + "\n");
 }
 

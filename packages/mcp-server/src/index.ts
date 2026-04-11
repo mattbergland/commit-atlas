@@ -19,7 +19,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { existsSync, mkdirSync, readFileSync, appendFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
@@ -70,6 +70,19 @@ function readEvents(): StoredEvent[] {
 
 function addEvent(event: StoredEvent): void {
   ensureConfigDir();
+  // Migrate legacy JSON array format to JSONL before appending
+  if (existsSync(EVENTS_FILE)) {
+    try {
+      const raw = readFileSync(EVENTS_FILE, "utf-8").trim();
+      if (raw.startsWith("[")) {
+        const existing = JSON.parse(raw) as StoredEvent[];
+        const jsonl = existing.map((e) => JSON.stringify(e)).join("\n") + "\n";
+        writeFileSync(EVENTS_FILE, jsonl);
+      }
+    } catch {
+      // If parsing fails, leave file as-is and append
+    }
+  }
   appendFileSync(EVENTS_FILE, JSON.stringify(event) + "\n");
 }
 
@@ -98,11 +111,12 @@ function sanitizeCommandMcp(command: string): string {
   }
   for (const pattern of SENSITIVE_PATTERNS_MCP) {
     if (pattern.test(trimmed)) {
-      // Mask sensitive values instead of dropping
-      return trimmed
+      // Try to mask sensitive values; if masking regexes don't apply, filter entirely
+      const masked = trimmed
         .replace(/((?:[\w]+(?:TOKEN|SECRET|KEY|PASSWORD|PASS|PWD|CREDENTIAL|AUTH|API_KEY|ACCESS_KEY|PRIVATE_KEY))\s*=\s*)(\S+)/gi, "$1***")
         .replace(/(--(?:token|password|secret|key|auth|credential|api-key|access-key|private-key)\s+)\S+/gi, "$1***")
         .replace(/(Authorization:\s+(?:Bearer|Basic|Token)\s+)\S+/gi, "$1***");
+      return masked === trimmed ? "[FILTERED]" : masked;
     }
   }
   return trimmed;
