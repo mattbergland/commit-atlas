@@ -29,7 +29,6 @@ function GeneratePageInner() {
   const [error, setError] = useState<string | null>(null);
   const [isDemo, setIsDemo] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [hasFetched, setHasFetched] = useState(false);
 
   const posterRef = useRef<HTMLDivElement>(null);
 
@@ -41,6 +40,10 @@ function GeneratePageInner() {
     subtitle: "",
     showStats: true,
     showLanguages: true,
+    showAgentMetadata: true,
+    sourceFilter: "all",
+    includeAgentActivity: true,
+    includeCliActivity: true,
   });
 
   const fetchData = useCallback(async () => {
@@ -49,8 +52,6 @@ function GeneratePageInner() {
 
     setLoading(true);
     setError(null);
-    setHasFetched(true);
-
     if (demoParam && !username) {
       const year = parseInt(yearParam);
       const month = monthParam ? parseInt(monthParam) : undefined;

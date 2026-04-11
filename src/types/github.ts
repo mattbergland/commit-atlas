@@ -53,6 +53,10 @@ export interface PosterConfig {
   subtitle: string;
   showStats: boolean;
   showLanguages: boolean;
+  showAgentMetadata: boolean;
+  sourceFilter: import("./activity").ActivitySource | "all";
+  includeAgentActivity: boolean;
+  includeCliActivity: boolean;
 }
 
 /** API response from /api/github */

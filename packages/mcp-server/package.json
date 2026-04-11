@@ -1,0 +1,29 @@
+{
+  "name": "commit-atlas-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for Commit Atlas — enables Cursor and Windsurf integration",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "commit-atlas-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5"
+  },
+  "keywords": [
+    "commit-atlas",
+    "mcp",
+    "cursor",
+    "windsurf",
+    "agent"
+  ],
+  "license": "MIT"
+}

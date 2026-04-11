@@ -1,0 +1,35 @@
+{
+  "name": "commit-atlas-cli",
+  "version": "0.1.0",
+  "description": "CLI tool for Commit Atlas — track coding activity, agent sessions, and CLI workflows",
+  "type": "module",
+  "bin": {
+    "commit-atlas": "./bin/commit-atlas.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "commander": "^12.0.0",
+    "chalk": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "typescript": "^5"
+  },
+  "files": [
+    "bin/",
+    "dist/",
+    "scripts/"
+  ],
+  "keywords": [
+    "commit-atlas",
+    "github",
+    "contributions",
+    "cli",
+    "agent",
+    "tracking"
+  ],
+  "license": "MIT"
+}

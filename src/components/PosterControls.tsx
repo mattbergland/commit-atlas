@@ -2,6 +2,8 @@
 
 import { PosterConfig, PosterVariant, PosterSize } from "@/types/github";
 import { PALETTES } from "@/lib/palettes";
+import { SOURCE_FILTER_OPTIONS } from "@/types/activity";
+import type { ActivitySource } from "@/types/activity";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -159,6 +161,30 @@ export default function PosterControls({
 
       <Separator />
 
+      {/* Activity Source Filter */}
+      <div className="space-y-3">
+        <Label className="text-xs font-medium tracking-widest uppercase text-muted-foreground">
+          Activity Source
+        </Label>
+        <div className="flex flex-wrap gap-1.5">
+          {SOURCE_FILTER_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              onClick={() => update({ sourceFilter: opt.value as ActivitySource | "all" })}
+              className={`rounded-full px-3 py-1 text-xs transition-all cursor-pointer ${
+                config.sourceFilter === opt.value
+                  ? "bg-foreground text-background font-medium"
+                  : "border border-border text-muted-foreground hover:border-foreground/30"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <Separator />
+
       {/* Toggles */}
       <div className="space-y-3">
         <Label className="text-xs font-medium tracking-widest uppercase text-muted-foreground">
@@ -179,6 +205,33 @@ export default function PosterControls({
             <Switch
               checked={config.showLanguages}
               onCheckedChange={(checked) => update({ showLanguages: checked })}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">
+              Show agent metadata
+            </span>
+            <Switch
+              checked={config.showAgentMetadata}
+              onCheckedChange={(checked) => update({ showAgentMetadata: checked })}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">
+              Include agent activity
+            </span>
+            <Switch
+              checked={config.includeAgentActivity}
+              onCheckedChange={(checked) => update({ includeAgentActivity: checked })}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">
+              Include CLI activity
+            </span>
+            <Switch
+              checked={config.includeCliActivity}
+              onCheckedChange={(checked) => update({ includeCliActivity: checked })}
             />
           </div>
         </div>
