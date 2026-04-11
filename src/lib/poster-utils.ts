@@ -103,9 +103,10 @@ export function aggregateContributions(
 
 /** Generate a seeded pseudo-random number for deterministic visuals */
 export function seededRandom(seed: number): () => number {
-  let s = seed;
+  // Park-Miller LCG requires seed in [1, 2147483646]
+  let s = ((seed % 2147483646) + 2147483646) % 2147483646 || 1;
   return () => {
-    s = (s * 16807 + 0) % 2147483647;
+    s = (s * 16807) % 2147483647;
     return s / 2147483647;
   };
 }

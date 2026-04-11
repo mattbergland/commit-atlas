@@ -173,17 +173,17 @@ async function fetchTopLanguages(
       }
     }
 
-    const total = Object.values(langCounts).reduce((s, c) => s + c, 0);
-    if (total === 0) return [];
+    if (Object.keys(langCounts).length === 0) return [];
 
-    return Object.entries(langCounts)
+    const top5 = Object.entries(langCounts)
       .sort(([, a], [, b]) => b - a)
-      .slice(0, 5)
-      .map(([name, count]) => ({
-        name,
-        percentage: Math.round((count / total) * 100),
-        color: defaultColors[name] || "#888888",
-      }));
+      .slice(0, 5);
+    const top5Total = top5.reduce((s, [, c]) => s + c, 0);
+    return top5.map(([name, count]) => ({
+      name,
+      percentage: Math.round((count / top5Total) * 100),
+      color: defaultColors[name] || "#888888",
+    }));
   } catch {
     return [];
   }
