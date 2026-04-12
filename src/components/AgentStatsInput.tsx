@@ -398,7 +398,7 @@ function normalizeToolName(name: string): string {
   const lower = name.toLowerCase();
   if (lower.includes("claude")) return "claude_code";
   if (lower.includes("cursor")) return "cursor";
-  if (lower.includes("copilot")) return "cursor"; // Group with IDE agents
+  if (lower.includes("copilot")) return "copilot";
   if (lower.includes("windsurf") || lower.includes("cascade"))
     return "windsurf";
   if (lower.includes("devin")) return "devin";
