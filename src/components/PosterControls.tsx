@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Layers, Grid3X3, Route, Map } from "lucide-react";
+import { Layers, Grid3X3, Route, Map, Shapes, CircleDot, Music } from "lucide-react";
 
 interface PosterControlsProps {
   config: PosterConfig;
@@ -24,6 +24,9 @@ const VARIANT_OPTIONS: { value: PosterVariant; label: string; icon: React.ReactN
   { value: "grid", label: "Grid Modern", icon: <Grid3X3 className="w-4 h-4" />, desc: "Geometric blocks" },
   { value: "path", label: "Path", icon: <Route className="w-4 h-4" />, desc: "Journey line" },
   { value: "atlas", label: "Atlas", icon: <Map className="w-4 h-4" />, desc: "Topographic map" },
+  { value: "fragments", label: "Fragments", icon: <Shapes className="w-4 h-4" />, desc: "Bauhaus shapes" },
+  { value: "concerto", label: "Concerto", icon: <CircleDot className="w-4 h-4" />, desc: "Curved forms" },
+  { value: "rhythm", label: "Rhythm", icon: <Music className="w-4 h-4" />, desc: "Circle & line" },
 ];
 
 const SIZE_OPTIONS: { value: PosterSize; label: string }[] = [
@@ -50,7 +53,7 @@ export default function PosterControls({
         <Label className="text-xs font-medium tracking-widest uppercase text-muted-foreground">
           Style
         </Label>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4 gap-2 sm:grid-cols-4">
           {VARIANT_OPTIONS.map((opt) => (
             <button
               key={opt.value}

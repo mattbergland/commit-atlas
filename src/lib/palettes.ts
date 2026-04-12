@@ -82,6 +82,36 @@ export const PALETTES: ColorPalette[] = [
     sun: "#F0C040",
     metadata: "#8A7068",
   },
+  {
+    id: "bauhaus-red",
+    name: "Bauhaus Red",
+    background: "#F5F0E8",
+    foreground: "#1A1A1A",
+    accent: "#E04520",
+    layers: ["#1A1A1A", "#2A2A2A", "#3A3A3A", "#E04520", "#F06040", "#F5F0E8"],
+    sun: "#E04520",
+    metadata: "#8A8580",
+  },
+  {
+    id: "bauhaus-blue",
+    name: "Bauhaus Blue",
+    background: "#F2F0EB",
+    foreground: "#1C1C1C",
+    accent: "#2856A3",
+    layers: ["#1C1C1C", "#2C2C2C", "#3C3C3C", "#2856A3", "#4878C8", "#F2F0EB"],
+    sun: "#2856A3",
+    metadata: "#8B8985",
+  },
+  {
+    id: "bauhaus-yellow",
+    name: "Bauhaus Yellow",
+    background: "#F8F4EC",
+    foreground: "#1E1E1E",
+    accent: "#E8A820",
+    layers: ["#1E1E1E", "#2E2E2E", "#4A4A4A", "#E8A820", "#F0C850", "#F8F4EC"],
+    sun: "#E8A820",
+    metadata: "#908A80",
+  },
 ];
 
 export function getPaletteById(id: string): ColorPalette {

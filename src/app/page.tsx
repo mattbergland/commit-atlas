@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { parseUsername } from "@/lib/username";
-import { ArrowRight, Sparkles, Mountain, Grid3X3, Route, Map } from "lucide-react";
+import { ArrowRight, Sparkles, Mountain, Grid3X3, Route, Map, Shapes, CircleDot, Music } from "lucide-react";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -169,42 +169,76 @@ export default function LandingPage() {
           </button>
 
           {/* Style previews */}
-          <div className="pt-8 grid grid-cols-4 gap-6 max-w-xl mx-auto">
-            {[
-              {
-                icon: <Mountain className="w-5 h-5" />,
-                label: "Horizon",
-                desc: "Layered landscape",
-              },
-              {
-                icon: <Grid3X3 className="w-5 h-5" />,
-                label: "Grid Modern",
-                desc: "Geometric blocks",
-              },
-              {
-                icon: <Route className="w-5 h-5" />,
-                label: "Path",
-                desc: "Journey line",
-              },
-              {
-                icon: <Map className="w-5 h-5" />,
-                label: "Atlas",
-                desc: "Topographic map",
-              },
-            ].map((style) => (
-              <div
-                key={style.label}
-                className="text-center space-y-2 text-muted-foreground"
-              >
-                <div className="mx-auto w-12 h-12 rounded-lg border border-border flex items-center justify-center">
-                  {style.icon}
+          <div className="pt-8 space-y-6 max-w-2xl mx-auto">
+            <div className="grid grid-cols-4 gap-4">
+              {[
+                {
+                  icon: <Mountain className="w-5 h-5" />,
+                  label: "Horizon",
+                  desc: "Layered landscape",
+                },
+                {
+                  icon: <Grid3X3 className="w-5 h-5" />,
+                  label: "Grid Modern",
+                  desc: "Geometric blocks",
+                },
+                {
+                  icon: <Route className="w-5 h-5" />,
+                  label: "Path",
+                  desc: "Journey line",
+                },
+                {
+                  icon: <Map className="w-5 h-5" />,
+                  label: "Atlas",
+                  desc: "Topographic map",
+                },
+              ].map((style) => (
+                <div
+                  key={style.label}
+                  className="text-center space-y-2 text-muted-foreground"
+                >
+                  <div className="mx-auto w-12 h-12 rounded-lg border border-border flex items-center justify-center">
+                    {style.icon}
+                  </div>
+                  <p className="text-xs font-medium text-foreground">
+                    {style.label}
+                  </p>
+                  <p className="text-[11px]">{style.desc}</p>
                 </div>
-                <p className="text-xs font-medium text-foreground">
-                  {style.label}
-                </p>
-                <p className="text-[11px]">{style.desc}</p>
-              </div>
-            ))}
+              ))}
+            </div>
+            <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto">
+              {[
+                {
+                  icon: <Shapes className="w-5 h-5" />,
+                  label: "Fragments",
+                  desc: "Bauhaus shapes",
+                },
+                {
+                  icon: <CircleDot className="w-5 h-5" />,
+                  label: "Concerto",
+                  desc: "Curved forms",
+                },
+                {
+                  icon: <Music className="w-5 h-5" />,
+                  label: "Rhythm",
+                  desc: "Circle & line",
+                },
+              ].map((style) => (
+                <div
+                  key={style.label}
+                  className="text-center space-y-2 text-muted-foreground"
+                >
+                  <div className="mx-auto w-12 h-12 rounded-lg border border-border flex items-center justify-center">
+                    {style.icon}
+                  </div>
+                  <p className="text-xs font-medium text-foreground">
+                    {style.label}
+                  </p>
+                  <p className="text-[11px]">{style.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </main>
