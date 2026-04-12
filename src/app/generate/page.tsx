@@ -9,13 +9,14 @@ import {
   PosterConfig,
   GitHubApiResponse,
 } from "@/types/github";
+import type { AgentStats } from "@/lib/commit-analysis";
 import { PALETTES } from "@/lib/palettes";
 import { generateMockData } from "@/lib/mock-data";
 import { filterByMonth, calculateLongestStreak, calculateCurrentStreak } from "@/lib/streaks";
 import { exportToPng, exportToPdf } from "@/lib/export";
 import PosterRenderer from "@/components/posters/PosterRenderer";
 import PosterControls from "@/components/PosterControls";
-import { ArrowLeft, Loader2, AlertCircle, Sparkles, Bot } from "lucide-react";
+import { ArrowLeft, Loader2, AlertCircle, Sparkles } from "lucide-react";
 
 function GeneratePageInner() {
   const searchParams = useSearchParams();
@@ -29,6 +30,7 @@ function GeneratePageInner() {
   const [error, setError] = useState<string | null>(null);
   const [isDemo, setIsDemo] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [userAgentStats, setUserAgentStats] = useState<AgentStats | null>(null);
 
   const posterRef = useRef<HTMLDivElement>(null);
 
@@ -170,6 +172,14 @@ function GeneratePageInner() {
     }
   };
 
+  const handleAgentStatsChange = (stats: AgentStats | null) => {
+    setUserAgentStats(stats);
+    // Also update githubData so the poster and info card reflect the change
+    if (githubData) {
+      setGithubData({ ...githubData, agentStats: stats || undefined });
+    }
+  };
+
   const handleSaveConfig = () => {
     const configJson = JSON.stringify(
       {
@@ -260,40 +270,25 @@ function GeneratePageInner() {
                     config={config}
                   />
 
-                  {/* Agent stats detected from commit history */}
-                  {githubData.agentStats && githubData.agentStats.agentCommits > 0 && (
+                  {/* Agent stats summary */}
+                  {(userAgentStats || githubData.agentStats)?.agentCommits != null &&
+                    (userAgentStats || githubData.agentStats)!.agentCommits > 0 && (
                     <div className="rounded-lg border border-border bg-card p-4 text-sm">
                       <div className="flex items-center gap-2 mb-3">
-                        <Bot className="w-4 h-4 text-muted-foreground" />
                         <span className="font-medium text-xs tracking-widest uppercase text-muted-foreground">
-                          Agent Activity Detected
+                          {userAgentStats ? "Agent Stats" : "Agent Activity Detected"}
                         </span>
                       </div>
                       <div className="space-y-2">
-                        {githubData.agentStats.agentBreakdown.map((agent) => (
+                        {(userAgentStats || githubData.agentStats)!.agentBreakdown.map((agent) => (
                           <div key={agent.agent} className="flex items-center justify-between">
                             <span className="text-foreground">{agent.label}</span>
                             <span className="text-muted-foreground tabular-nums">
-                              {agent.count} commit{agent.count !== 1 ? "s" : ""}
+                              {agent.count} session{agent.count !== 1 ? "s" : ""}
                             </span>
                           </div>
                         ))}
-                        <div className="pt-2 border-t border-border/50 flex items-center justify-between text-xs text-muted-foreground">
-                          <span>{githubData.agentStats.totalAnalyzed} commits analyzed</span>
-                          <span>
-                            {Math.round((githubData.agentStats.agentCommits / githubData.agentStats.totalAnalyzed) * 100)}% agent-assisted
-                          </span>
-                        </div>
                       </div>
-                    </div>
-                  )}
-
-                  {githubData.agentStats && githubData.agentStats.agentCommits === 0 && githubData.agentStats.totalAnalyzed > 0 && !isDemo && (
-                    <div className="rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground flex items-center gap-2">
-                      <Bot className="w-3.5 h-3.5" />
-                      <span>
-                        {githubData.agentStats.totalAnalyzed} commits analyzed · No agent signatures detected
-                      </span>
                     </div>
                   )}
                 </div>
@@ -317,6 +312,8 @@ function GeneratePageInner() {
                       onExportPdf={handleExportPdf}
                       onSaveConfig={handleSaveConfig}
                       isExporting={isExporting}
+                      agentStats={userAgentStats || githubData?.agentStats || null}
+                      onAgentStatsChange={handleAgentStatsChange}
                     />
                   </div>
                 </div>

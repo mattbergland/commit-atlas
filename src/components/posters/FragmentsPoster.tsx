@@ -321,33 +321,32 @@ export default function FragmentsPoster({ data, config }: FragmentsPosterProps) 
         </g>
       )}
 
-      {/* Language bar */}
+      {/* Language legend */}
       {config.showLanguages && data.topLanguages.length > 0 && (
         <g>
-          {(() => {
-            const barY = height * 0.92;
-            const barHeight = 4;
-            const barStart = marginX;
-            const barWidth = width - marginX * 2;
-            let currentX = barStart;
-            return data.topLanguages.map((lang, i) => {
-              const w = (lang.percentage / 100) * barWidth;
-              const x = currentX;
-              currentX += w;
-              return (
-                <rect
-                  key={`lang-${i}`}
-                  x={x}
-                  y={barY}
-                  width={w}
-                  height={barHeight}
-                  fill={lang.color}
-                  opacity={0.8}
-                  rx={i === 0 ? 2 : 0}
-                />
-              );
-            });
-          })()}
+          {data.topLanguages.map((lang, i) => {
+            const totalLangs = data.topLanguages.length;
+            const spacing = 100;
+            const startX = width / 2 - ((totalLangs - 1) * spacing) / 2;
+            const x = startX + i * spacing;
+            const y = height * 0.93;
+
+            return (
+              <g key={`lang-${i}`}>
+                <circle cx={x - 14} cy={y - 3} r={4} fill={lang.color} />
+                <text
+                  x={x - 6}
+                  y={y}
+                  fontFamily="'Geist Mono', 'Courier New', monospace"
+                  fontSize={9}
+                  fill={palette.metadata}
+                  letterSpacing="0.03em"
+                >
+                  {lang.name}
+                </text>
+              </g>
+            );
+          })}
         </g>
       )}
 

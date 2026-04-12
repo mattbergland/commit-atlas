@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Layers, Grid3X3, Route, Map, Shapes, CircleDot, Music } from "lucide-react";
+import AgentStatsInput from "@/components/AgentStatsInput";
+import type { AgentStats } from "@/lib/commit-analysis";
 
 interface PosterControlsProps {
   config: PosterConfig;
@@ -17,6 +19,8 @@ interface PosterControlsProps {
   onExportPdf: () => void;
   onSaveConfig: () => void;
   isExporting: boolean;
+  agentStats: AgentStats | null;
+  onAgentStatsChange: (stats: AgentStats | null) => void;
 }
 
 const VARIANT_OPTIONS: { value: PosterVariant; label: string; icon: React.ReactNode; desc: string }[] = [
@@ -41,6 +45,8 @@ export default function PosterControls({
   onExportPdf,
   onSaveConfig,
   isExporting,
+  agentStats,
+  onAgentStatsChange,
 }: PosterControlsProps) {
   const update = (partial: Partial<PosterConfig>) => {
     onChange({ ...config, ...partial });
@@ -161,6 +167,14 @@ export default function PosterControls({
           ))}
         </div>
       </div>
+
+      <Separator />
+
+      {/* Agent Stats Input */}
+      <AgentStatsInput
+        onStatsChange={onAgentStatsChange}
+        currentStats={agentStats}
+      />
 
       <Separator />
 
