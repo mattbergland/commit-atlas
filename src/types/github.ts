@@ -24,6 +24,7 @@ export interface GitHubData {
   topLanguages: { name: string; percentage: number; color: string }[];
   year: number;
   month?: number; // 1-12, undefined for full year
+  agentStats?: import("@/lib/commit-analysis").AgentStats;
 }
 
 /** Poster style variant */
