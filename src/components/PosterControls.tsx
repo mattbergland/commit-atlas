@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { PosterConfig, PosterVariant, PosterSize } from "@/types/github";
 import { PALETTES } from "@/lib/palettes";
 import { SOURCE_FILTER_OPTIONS } from "@/types/activity";
@@ -8,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Layers, Grid3X3, Route, Map, Shapes, CircleDot, Music } from "lucide-react";
+import { Layers, Grid3X3, Route, Map, Shapes, CircleDot, Music, ChevronDown } from "lucide-react";
 import AgentStatsInput from "@/components/AgentStatsInput";
 import type { AgentStats } from "@/lib/commit-analysis";
 
@@ -48,6 +49,8 @@ export default function PosterControls({
   agentStats,
   onAgentStatsChange,
 }: PosterControlsProps) {
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
   const update = (partial: Partial<PosterConfig>) => {
     onChange({ ...config, ...partial });
   };
@@ -178,80 +181,85 @@ export default function PosterControls({
 
       <Separator />
 
-      {/* Activity Source Filter */}
-      <div className="space-y-3">
-        <Label className="text-xs font-medium tracking-widest uppercase text-muted-foreground">
-          Activity Source
-        </Label>
-        <div className="flex flex-wrap gap-1.5">
-          {SOURCE_FILTER_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => update({ sourceFilter: opt.value as ActivitySource | "all" })}
-              className={`rounded-full px-3 py-1 text-xs transition-all cursor-pointer ${
-                config.sourceFilter === opt.value
-                  ? "bg-foreground text-background font-medium"
-                  : "border border-border text-muted-foreground hover:border-foreground/30"
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
+      {/* Display Toggles — compact row */}
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Switch
+            id="show-stats"
+            checked={config.showStats}
+            onCheckedChange={(checked) => update({ showStats: checked })}
+          />
+          <label htmlFor="show-stats" className="text-xs text-muted-foreground cursor-pointer">Stats</label>
+        </div>
+        <div className="flex items-center gap-2">
+          <Switch
+            id="show-langs"
+            checked={config.showLanguages}
+            onCheckedChange={(checked) => update({ showLanguages: checked })}
+          />
+          <label htmlFor="show-langs" className="text-xs text-muted-foreground cursor-pointer">Languages</label>
         </div>
       </div>
 
-      <Separator />
+      {/* Advanced — collapsible */}
+      <div>
+        <button
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer w-full"
+        >
+          <ChevronDown className={`w-3 h-3 transition-transform ${showAdvanced ? "rotate-180" : ""}`} />
+          Advanced options
+        </button>
+        {showAdvanced && (
+          <div className="mt-3 space-y-4">
+            {/* Activity Source Filter */}
+            <div className="space-y-2">
+              <Label className="text-[10px] font-medium tracking-widest uppercase text-muted-foreground">
+                Activity Source
+              </Label>
+              <div className="flex flex-wrap gap-1.5">
+                {SOURCE_FILTER_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update({ sourceFilter: opt.value as ActivitySource | "all" })}
+                    className={`rounded-full px-2.5 py-0.5 text-[10px] transition-all cursor-pointer ${
+                      config.sourceFilter === opt.value
+                        ? "bg-foreground text-background font-medium"
+                        : "border border-border text-muted-foreground hover:border-foreground/30"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-      {/* Toggles */}
-      <div className="space-y-3">
-        <Label className="text-xs font-medium tracking-widest uppercase text-muted-foreground">
-          Display
-        </Label>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Show stats</span>
-            <Switch
-              checked={config.showStats}
-              onCheckedChange={(checked) => update({ showStats: checked })}
-            />
+            {/* Additional toggles */}
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Agent metadata</span>
+                <Switch
+                  checked={config.showAgentMetadata}
+                  onCheckedChange={(checked) => update({ showAgentMetadata: checked })}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Agent activity</span>
+                <Switch
+                  checked={config.includeAgentActivity}
+                  onCheckedChange={(checked) => update({ includeAgentActivity: checked })}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">CLI activity</span>
+                <Switch
+                  checked={config.includeCliActivity}
+                  onCheckedChange={(checked) => update({ includeCliActivity: checked })}
+                />
+              </div>
+            </div>
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">
-              Show languages
-            </span>
-            <Switch
-              checked={config.showLanguages}
-              onCheckedChange={(checked) => update({ showLanguages: checked })}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">
-              Show agent metadata
-            </span>
-            <Switch
-              checked={config.showAgentMetadata}
-              onCheckedChange={(checked) => update({ showAgentMetadata: checked })}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">
-              Include agent activity
-            </span>
-            <Switch
-              checked={config.includeAgentActivity}
-              onCheckedChange={(checked) => update({ includeAgentActivity: checked })}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">
-              Include CLI activity
-            </span>
-            <Switch
-              checked={config.includeCliActivity}
-              onCheckedChange={(checked) => update({ includeCliActivity: checked })}
-            />
-          </div>
-        </div>
+        )}
       </div>
 
       <Separator />

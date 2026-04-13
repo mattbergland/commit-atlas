@@ -264,11 +264,13 @@ function GeneratePageInner() {
             <div className="lg:col-span-8 flex items-start justify-center">
               {githubData && (
                 <div className="w-full max-w-[600px] sticky top-8 space-y-4">
-                  <PosterRenderer
-                    ref={posterRef}
-                    data={githubData}
-                    config={config}
-                  />
+                  <div className="rounded-sm shadow-[0_8px_30px_rgba(0,0,0,0.12)] ring-1 ring-black/5 overflow-hidden">
+                    <PosterRenderer
+                      ref={posterRef}
+                      data={githubData}
+                      config={config}
+                    />
+                  </div>
 
                   {/* Agent stats summary */}
                   {(userAgentStats || githubData.agentStats)?.agentCommits != null &&
