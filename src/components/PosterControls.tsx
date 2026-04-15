@@ -22,16 +22,18 @@ interface PosterControlsProps {
   isExporting: boolean;
   agentStats: AgentStats | null;
   onAgentStatsChange: (stats: AgentStats | null) => void;
+  onVariantSelect?: (variant: PosterVariant) => void;
+  isCycling?: boolean;
 }
 
-const VARIANT_OPTIONS: { value: PosterVariant; label: string; icon: React.ReactNode; desc: string }[] = [
-  { value: "horizon", label: "Horizon", icon: <Layers className="w-4 h-4" />, desc: "Layered landscape" },
-  { value: "grid", label: "Grid Modern", icon: <Grid3X3 className="w-4 h-4" />, desc: "Geometric blocks" },
-  { value: "path", label: "Path", icon: <Route className="w-4 h-4" />, desc: "Journey line" },
-  { value: "atlas", label: "Atlas", icon: <Map className="w-4 h-4" />, desc: "Topographic map" },
-  { value: "fragments", label: "Fragments", icon: <Shapes className="w-4 h-4" />, desc: "Bauhaus shapes" },
-  { value: "concerto", label: "Concerto", icon: <CircleDot className="w-4 h-4" />, desc: "Curved forms" },
-  { value: "rhythm", label: "Rhythm", icon: <Music className="w-4 h-4" />, desc: "Circle & line" },
+const VARIANT_OPTIONS: { value: PosterVariant; label: string; icon: React.ReactNode; desc: string; tooltip: string }[] = [
+  { value: "horizon", label: "Horizon", icon: <Layers className="w-4 h-4" />, desc: "Layered landscape", tooltip: "Mountain layers = weekly contribution intensity. Taller peaks = more active weeks. The sun position reflects your longest streak." },
+  { value: "grid", label: "Grid Modern", icon: <Grid3X3 className="w-4 h-4" />, desc: "Geometric blocks", tooltip: "Each colored square = one day. Size and opacity map to commit count. Read left-to-right, top-to-bottom like a calendar heatmap." },
+  { value: "path", label: "Path", icon: <Route className="w-4 h-4" />, desc: "Journey line", tooltip: "The winding line traces your contribution journey through the year. Dots mark high-activity days. Denser sections = sustained streaks." },
+  { value: "atlas", label: "Atlas", icon: <Map className="w-4 h-4" />, desc: "Topographic map", tooltip: "Contour lines form a topographic map of your code output. Peaks = most productive periods. Concentric rings = consistent effort." },
+  { value: "fragments", label: "Fragments", icon: <Shapes className="w-4 h-4" />, desc: "Bauhaus shapes", tooltip: "Each shape represents a month of contributions. Shape size = total commits. Accent-colored shapes = your most active months." },
+  { value: "concerto", label: "Concerto", icon: <CircleDot className="w-4 h-4" />, desc: "Curved forms", tooltip: "Quarter-circle arcs compose a visual rhythm. Arc size maps to weekly activity. Interlocking forms show consistency across months." },
+  { value: "rhythm", label: "Rhythm", icon: <Music className="w-4 h-4" />, desc: "Circle & line", tooltip: "Circles on a grid represent individual days. Circle size = commit count for that day. Rows = weeks, columns = days of the week." },
 ];
 
 const SIZE_OPTIONS: { value: PosterSize; label: string }[] = [
@@ -48,6 +50,8 @@ export default function PosterControls({
   isExporting,
   agentStats,
   onAgentStatsChange,
+  onVariantSelect,
+  isCycling,
 }: PosterControlsProps) {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
@@ -66,10 +70,11 @@ export default function PosterControls({
           {VARIANT_OPTIONS.map((opt) => (
             <button
               key={opt.value}
-              onClick={() => update({ variant: opt.value })}
+              onClick={() => onVariantSelect ? onVariantSelect(opt.value) : update({ variant: opt.value })}
+              title={opt.tooltip}
               className={`flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs transition-all cursor-pointer ${
                 config.variant === opt.value
-                  ? "border-foreground bg-foreground/5 text-foreground"
+                  ? `border-foreground bg-foreground/5 text-foreground${isCycling ? " animate-pulse" : ""}`
                   : "border-border text-muted-foreground hover:border-foreground/30"
               }`}
             >

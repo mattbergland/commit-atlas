@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import Link from "next/link";
@@ -18,6 +18,8 @@ import PosterRenderer from "@/components/posters/PosterRenderer";
 import PosterControls from "@/components/PosterControls";
 import { ArrowLeft, Loader2, AlertCircle, Sparkles } from "lucide-react";
 
+const VARIANT_ORDER: PosterConfig["variant"][] = ["horizon", "grid", "path", "atlas", "fragments", "concerto", "rhythm"];
+
 function GeneratePageInner() {
   const searchParams = useSearchParams();
   const usernameParam = searchParams.get("username") || "";
@@ -31,6 +33,7 @@ function GeneratePageInner() {
   const [isDemo, setIsDemo] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [userAgentStats, setUserAgentStats] = useState<AgentStats | null>(null);
+  const [hasUserSelectedVariant, setHasUserSelectedVariant] = useState(false);
 
   const posterRef = useRef<HTMLDivElement>(null);
 
@@ -170,6 +173,24 @@ function GeneratePageInner() {
     } finally {
       setIsExporting(false);
     }
+  };
+
+  // Auto-cycle poster variants until user selects one
+  useEffect(() => {
+    if (hasUserSelectedVariant || !githubData) return;
+    const interval = setInterval(() => {
+      setConfig((prev) => {
+        const currentIdx = VARIANT_ORDER.indexOf(prev.variant);
+        const nextIdx = (currentIdx + 1) % VARIANT_ORDER.length;
+        return { ...prev, variant: VARIANT_ORDER[nextIdx] };
+      });
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [hasUserSelectedVariant, githubData]);
+
+  const handleVariantSelect = (variant: PosterConfig["variant"]) => {
+    setHasUserSelectedVariant(true);
+    setConfig((prev) => ({ ...prev, variant }));
   };
 
   const handleAgentStatsChange = (stats: AgentStats | null) => {
@@ -316,6 +337,8 @@ function GeneratePageInner() {
                       isExporting={isExporting}
                       agentStats={userAgentStats || githubData?.agentStats || null}
                       onAgentStatsChange={handleAgentStatsChange}
+                      onVariantSelect={handleVariantSelect}
+                      isCycling={!hasUserSelectedVariant}
                     />
                   </div>
                 </div>
