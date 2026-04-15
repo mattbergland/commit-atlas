@@ -9,6 +9,7 @@ import AtlasPoster from "./AtlasPoster";
 import FragmentsPoster from "./FragmentsPoster";
 import ConcertoPoster from "./ConcertoPoster";
 import RhythmPoster from "./RhythmPoster";
+import BloomPoster from "./BloomPoster";
 
 interface PosterRendererProps {
   data: GitHubData;
@@ -40,6 +41,7 @@ const PosterRenderer = forwardRef<HTMLDivElement, PosterRendererProps>(
         {variant === "fragments" && <FragmentsPoster data={data} config={config} />}
         {variant === "concerto" && <ConcertoPoster data={data} config={config} />}
         {variant === "rhythm" && <RhythmPoster data={data} config={config} />}
+        {variant === "bloom" && <BloomPoster data={data} config={config} />}
       </div>
     );
   }
