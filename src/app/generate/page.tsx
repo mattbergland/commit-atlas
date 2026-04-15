@@ -195,10 +195,6 @@ function GeneratePageInner() {
 
   const handleAgentStatsChange = (stats: AgentStats | null) => {
     setUserAgentStats(stats);
-    // Also update githubData so the poster and info card reflect the change
-    if (githubData) {
-      setGithubData({ ...githubData, agentStats: stats || undefined });
-    }
   };
 
   const handleSaveConfig = () => {

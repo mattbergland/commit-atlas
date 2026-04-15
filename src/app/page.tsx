@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { parseUsername } from "@/lib/username";
-import { ArrowRight, Sparkles, Mountain, Grid3X3, Route, Map, Shapes, CircleDot, Music, Search, Palette, Download } from "lucide-react";
+import { ArrowRight, Sparkles, Mountain, Grid3X3, Route, Map, Shapes, CircleDot, Music, Flower2, Search, Palette, Download } from "lucide-react";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -190,7 +190,7 @@ export default function LandingPage() {
                   step: "2",
                   icon: <Palette className="w-5 h-5" />,
                   title: "Customize your poster",
-                  desc: "Choose from 7 art styles and 11 palettes. Adjust text, stats, and agent activity.",
+                  desc: "Choose from 8 art styles and 11 palettes. Adjust text, stats, and agent activity.",
                 },
                 {
                   step: "3",
@@ -218,7 +218,7 @@ export default function LandingPage() {
           <div className="pt-16 space-y-8">
             <div className="space-y-2">
               <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground font-medium">
-                7 poster styles
+                8 poster styles
               </p>
               <h2 className="text-xl font-semibold tracking-tight">
                 Art-first, data-driven
@@ -246,23 +246,6 @@ export default function LandingPage() {
                   label: "Atlas",
                   desc: "Topographic map",
                 },
-              ].map((style) => (
-                <div
-                  key={style.label}
-                  className="text-center space-y-2 text-muted-foreground"
-                >
-                  <div className="mx-auto w-12 h-12 rounded-lg border border-border flex items-center justify-center">
-                    {style.icon}
-                  </div>
-                  <p className="text-xs font-medium text-foreground">
-                    {style.label}
-                  </p>
-                  <p className="text-[11px]">{style.desc}</p>
-                </div>
-              ))}
-            </div>
-            <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto">
-              {[
                 {
                   icon: <Shapes className="w-5 h-5" />,
                   label: "Fragments",
@@ -277,6 +260,11 @@ export default function LandingPage() {
                   icon: <Music className="w-5 h-5" />,
                   label: "Rhythm",
                   desc: "Circle & line",
+                },
+                {
+                  icon: <Flower2 className="w-5 h-5" />,
+                  label: "Bloom",
+                  desc: "Organic petals",
                 },
               ].map((style) => (
                 <div
