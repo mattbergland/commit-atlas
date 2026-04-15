@@ -21,6 +21,7 @@ function validateEvent(
     "windsurf",
     "devin",
     "claude_code",
+    "copilot",
     "cli",
   ];
   const validActors = ["human", "agent", "mixed"];
