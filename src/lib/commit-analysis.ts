@@ -28,6 +28,7 @@ const AGENT_LABELS: Record<string, string> = {
   devin: "Devin",
   cursor: "Cursor",
   windsurf: "Windsurf",
+  copilot: "GitHub Copilot",
   github: "GitHub",
   cli: "CLI",
 };

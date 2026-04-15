@@ -28,7 +28,7 @@ const AGENT_COMMIT_PATTERNS: { pattern: RegExp; agent: ActivitySource }[] = [
   { pattern: /\[windsurf\]/i, agent: "windsurf" },
 
   // GitHub Copilot
-  { pattern: /\bcopilot\b/i, agent: "cursor" }, // Group with IDE agents
+  { pattern: /\bcopilot\b/i, agent: "copilot" },
 ];
 
 /** Known agent command patterns */
@@ -94,6 +94,7 @@ export function getAgentLabel(source: ActivitySource): string {
     windsurf: "Windsurf",
     devin: "Devin",
     claude_code: "Claude Code",
+    copilot: "GitHub Copilot",
     cli: "CLI",
   };
   return labels[source];

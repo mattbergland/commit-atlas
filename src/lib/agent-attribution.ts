@@ -52,6 +52,7 @@ export function computeAttribution(events: ActivityEvent[]): {
       windsurf: 0,
       devin: 0,
       claude_code: 0,
+      copilot: 0,
       cli: 0,
     } as Record<ActivitySource, number>,
   };
@@ -87,6 +88,7 @@ export function getPrimaryAgent(
     "windsurf",
     "devin",
     "claude_code",
+    "copilot",
   ];
 
   const counts = agentSources.map((source) => ({

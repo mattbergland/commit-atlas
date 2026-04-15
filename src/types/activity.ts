@@ -5,6 +5,7 @@ export type ActivitySource =
   | "windsurf"
   | "devin"
   | "claude_code"
+  | "copilot"
   | "cli";
 
 /** Who performed the activity */
@@ -90,4 +91,5 @@ export const SOURCE_FILTER_OPTIONS: {
   { value: "cursor", label: "Cursor" },
   { value: "windsurf", label: "Windsurf" },
   { value: "devin", label: "Devin" },
+  { value: "copilot", label: "GitHub Copilot" },
 ];
