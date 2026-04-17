@@ -4,6 +4,7 @@ import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { parseUsername } from "@/lib/username";
 import { ArrowRight, Sparkles, Mountain, Grid3X3, Route, Map, Shapes, CircleDot, Music, Flower2, Search, Palette, Download } from "lucide-react";
+import BloomReveal from "@/components/BloomReveal";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -60,8 +61,11 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 pb-20">
-        <div className="mx-auto max-w-2xl w-full text-center space-y-10">
+      <main className="flex-1 flex flex-col items-center justify-center px-6 pb-20 relative">
+        {/* Bloom art reveal layer — hidden until cursor hovers */}
+        <BloomReveal />
+
+        <div className="mx-auto max-w-2xl w-full text-center space-y-10 relative z-10">
           {/* Tagline */}
           <div className="space-y-4">
             <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground font-medium">
