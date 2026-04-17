@@ -130,6 +130,21 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  // Auth check: require API key if EVENTS_API_KEY is configured
+  const requiredKey = process.env.EVENTS_API_KEY;
+  if (requiredKey) {
+    const authHeader = request.headers.get("authorization");
+    const providedKey = authHeader?.startsWith("Bearer ")
+      ? authHeader.slice(7)
+      : null;
+    if (providedKey !== requiredKey) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+  }
+
   const { searchParams } = new URL(request.url);
 
   let filtered = [...eventStore];
