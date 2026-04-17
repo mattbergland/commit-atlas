@@ -11,7 +11,7 @@ import {
   type StoredEvent,
 } from "../lib/store.js";
 import { sanitizeCommand } from "../lib/privacy.js";
-import { detectFromCommand, detectFromEnv } from "../lib/agent-detect.js";
+import { detectFromCommand, detectFromEnv, detectFromCommitMessage } from "../lib/agent-detect.js";
 import { categorizeCommand, isMeaningfulCommand } from "../lib/categorize.js";
 
 interface LogOptions {
@@ -72,6 +72,15 @@ export async function logCommand(options: LogOptions): Promise<void> {
       const cmdAgent = detectFromCommand(sanitized);
       if (cmdAgent) {
         agentName = cmdAgent;
+        actor = "mixed";
+      }
+    }
+
+    // Fallback: check commit message for agent signatures
+    if (!agentName && options.message) {
+      const msgAgent = detectFromCommitMessage(options.message);
+      if (msgAgent) {
+        agentName = msgAgent;
         actor = "mixed";
       }
     }
