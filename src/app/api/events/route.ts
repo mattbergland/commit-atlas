@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 import type { ActivityEvent, ActivitySource } from "@/types/activity";
 
 // In-memory event store (for MVP — replace with DB for production)
+const MAX_EVENTS = 10_000;
 const eventStore: ActivityEvent[] = [];
 
 /** Validate an incoming activity event */
@@ -72,6 +73,21 @@ function validateEvent(
 
 export async function POST(request: NextRequest) {
   try {
+    // Basic auth check: require API key if EVENTS_API_KEY is configured
+    const requiredKey = process.env.EVENTS_API_KEY;
+    if (requiredKey) {
+      const authHeader = request.headers.get("authorization");
+      const providedKey = authHeader?.startsWith("Bearer ")
+        ? authHeader.slice(7)
+        : null;
+      if (providedKey !== requiredKey) {
+        return NextResponse.json(
+          { error: "Unauthorized" },
+          { status: 401 }
+        );
+      }
+    }
+
     const body = await request.json();
 
     // Support single event or batch import
@@ -91,7 +107,12 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Store validated events
+    // Store validated events, evicting oldest when at capacity
+    const spaceLeft = MAX_EVENTS - eventStore.length;
+    if (spaceLeft < validated.length) {
+      const evictCount = validated.length - spaceLeft;
+      eventStore.splice(0, evictCount);
+    }
     eventStore.push(...validated);
 
     return NextResponse.json({

@@ -23,12 +23,13 @@ const AGENT_COMMIT_PATTERNS: { pattern: RegExp; agent: ActivitySource }[] = [
   { pattern: /\[cursor\]/i, agent: "cursor" },
 
   // Windsurf/Cascade patterns
-  { pattern: /\bwindsurf\b/i, agent: "windsurf" },
+  { pattern: /\bco-authored-by:.*windsurf\b/i, agent: "windsurf" },
   { pattern: /\[cascade\]/i, agent: "windsurf" },
   { pattern: /\[windsurf\]/i, agent: "windsurf" },
 
   // GitHub Copilot
-  { pattern: /\bcopilot\b/i, agent: "copilot" },
+  { pattern: /\bco-authored-by:.*copilot\b/i, agent: "copilot" },
+  { pattern: /\[copilot\]/i, agent: "copilot" },
 ];
 
 /** Known agent command patterns */
