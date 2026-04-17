@@ -3,7 +3,7 @@
  * Sets up shell hooks, git hooks, and initial configuration.
  */
 
-import { existsSync, readFileSync, writeFileSync, chmodSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync, chmodSync } from "node:fs";
 import { join } from "node:path";
 import chalk from "chalk";
 import {
@@ -139,6 +139,7 @@ async function installGitHooks(
     );
     writeFileSync(postCommitPath, existing + "\n\n" + hookContent);
   } else {
+    mkdirSync(hooksDir, { recursive: true });
     writeFileSync(postCommitPath, hookContent);
   }
   chmodSync(postCommitPath, "755");
