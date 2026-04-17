@@ -28,7 +28,7 @@ export interface GitHubData {
 }
 
 /** Poster style variant */
-export type PosterVariant = "horizon" | "grid" | "path" | "atlas" | "fragments" | "concerto" | "rhythm" | "bloom";
+export type PosterVariant = "horizon" | "grid" | "path" | "atlas" | "fragments" | "concerto" | "rhythm" | "bloom" | "breathe";
 
 /** Poster size options */
 export type PosterSize = "18x24" | "24x36";

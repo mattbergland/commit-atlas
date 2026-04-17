@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Layers, Grid3X3, Route, Map, Shapes, CircleDot, Music, Flower2, ChevronDown } from "lucide-react";
+import { Layers, Grid3X3, Route, Map, Shapes, CircleDot, Music, Flower2, Wind, ChevronDown } from "lucide-react";
 import AgentStatsInput from "@/components/AgentStatsInput";
 import type { AgentStats } from "@/lib/commit-analysis";
 
@@ -35,6 +35,7 @@ const VARIANT_OPTIONS: { value: PosterVariant; label: string; icon: React.ReactN
   { value: "concerto", label: "Concerto", icon: <CircleDot className="w-4 h-4" />, desc: "Curved forms", tooltip: "Quarter-circle arcs compose a visual rhythm. Arc size maps to weekly activity. Interlocking forms show consistency across months." },
   { value: "rhythm", label: "Rhythm", icon: <Music className="w-4 h-4" />, desc: "Circle & line", tooltip: "Circles on a grid represent individual days. Circle size = commit count for that day. Rows = weeks, columns = days of the week." },
   { value: "bloom", label: "Bloom", icon: <Flower2 className="w-4 h-4" />, desc: "Organic petals", tooltip: "Overlapping leaf shapes cluster into flowers. Petal size = monthly contribution volume. Colored dots mark peak activity periods." },
+  { value: "breathe", label: "Breathe", icon: <Wind className="w-4 h-4" />, desc: "Expand & contract", tooltip: "Two columns of shapes expand and contract like breathing. Shape size = contribution intensity. One column inhales while the other exhales." },
 ];
 
 const SIZE_OPTIONS: { value: PosterSize; label: string }[] = [

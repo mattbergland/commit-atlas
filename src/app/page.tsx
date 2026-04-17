@@ -3,7 +3,7 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { parseUsername } from "@/lib/username";
-import { ArrowRight, Sparkles, Mountain, Grid3X3, Route, Map, Shapes, CircleDot, Music, Flower2, Search, Palette, Download } from "lucide-react";
+import { ArrowRight, Sparkles, Mountain, Grid3X3, Route, Map, Shapes, CircleDot, Music, Flower2, Wind, Search, Palette, Download } from "lucide-react";
 import BloomReveal from "@/components/BloomReveal";
 
 export default function LandingPage() {
@@ -194,7 +194,7 @@ export default function LandingPage() {
                   step: "2",
                   icon: <Palette className="w-5 h-5" />,
                   title: "Customize your poster",
-                  desc: "Choose from 8 art styles and 11 palettes. Adjust text, stats, and agent activity.",
+                  desc: "Choose from 9 art styles and 11 palettes. Adjust text, stats, and agent activity.",
                 },
                 {
                   step: "3",
@@ -222,7 +222,7 @@ export default function LandingPage() {
           <div className="pt-16 space-y-8">
             <div className="space-y-2">
               <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground font-medium">
-                8 poster styles
+                9 poster styles
               </p>
               <h2 className="text-xl font-semibold tracking-tight">
                 Art-first, data-driven
@@ -269,6 +269,11 @@ export default function LandingPage() {
                   icon: <Flower2 className="w-5 h-5" />,
                   label: "Bloom",
                   desc: "Organic petals",
+                },
+                {
+                  icon: <Wind className="w-5 h-5" />,
+                  label: "Breathe",
+                  desc: "Expand & contract",
                 },
               ].map((style) => (
                 <div

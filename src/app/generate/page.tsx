@@ -18,7 +18,7 @@ import PosterRenderer from "@/components/posters/PosterRenderer";
 import PosterControls from "@/components/PosterControls";
 import { ArrowLeft, Loader2, AlertCircle, Sparkles } from "lucide-react";
 
-const VARIANT_ORDER: PosterConfig["variant"][] = ["horizon", "grid", "path", "atlas", "fragments", "concerto", "rhythm", "bloom"];
+const VARIANT_ORDER: PosterConfig["variant"][] = ["horizon", "grid", "path", "atlas", "fragments", "concerto", "rhythm", "bloom", "breathe"];
 
 function GeneratePageInner() {
   const searchParams = useSearchParams();
