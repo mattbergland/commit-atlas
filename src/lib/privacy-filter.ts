@@ -102,29 +102,36 @@ export function sanitizeCommand(command: string): string | null {
 export function filterEnvVars(
   env: Record<string, string>
 ): Record<string, string> {
-  const sensitiveKeys = [
+  // Use suffix matching to avoid masking standard env vars like PWD, SSH_AUTH_SOCK
+  const sensitiveSuffixes = [
+    "_TOKEN",
+    "_SECRET",
+    "_KEY",
+    "_PASSWORD",
+    "_CREDENTIAL",
+    "_API_KEY",
+    "_ACCESS_KEY",
+    "_PRIVATE_KEY",
+  ];
+
+  // Exact matches for well-known sensitive vars
+  const sensitiveExact = new Set([
     "TOKEN",
     "SECRET",
-    "KEY",
     "PASSWORD",
-    "PASS",
-    "PWD",
-    "CREDENTIAL",
-    "AUTH",
-    "API_KEY",
-    "ACCESS_KEY",
-    "PRIVATE_KEY",
     "GITHUB_TOKEN",
     "NPM_TOKEN",
     "AWS_SECRET",
-  ];
+    "AWS_SECRET_ACCESS_KEY",
+    "AWS_ACCESS_KEY_ID",
+  ]);
 
   const filtered: Record<string, string> = {};
   for (const [key, value] of Object.entries(env)) {
     const upperKey = key.toUpperCase();
-    const isSensitive = sensitiveKeys.some(
-      (s) => upperKey.includes(s)
-    );
+    const isSensitive =
+      sensitiveExact.has(upperKey) ||
+      sensitiveSuffixes.some((s) => upperKey.endsWith(s));
     filtered[key] = isSensitive ? "***" : value;
   }
   return filtered;

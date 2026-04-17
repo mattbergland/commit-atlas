@@ -44,7 +44,22 @@ commit-atlas log \\
 `;
 }
 
-/** Get the git hooks directory path for a repo */
+/** Get the git hooks directory path for a repo, respecting core.hooksPath */
 export function getGitHooksDir(repoPath: string): string {
+  try {
+    const { execSync } = require("node:child_process");
+    const hooksPath = execSync("git rev-parse --git-path hooks", {
+      cwd: repoPath,
+      encoding: "utf-8",
+    }).trim();
+    if (hooksPath) {
+      // git rev-parse --git-path returns a path relative to the repo root
+      // if core.hooksPath is not absolute
+      const { resolve } = require("node:path");
+      return resolve(repoPath, hooksPath);
+    }
+  } catch {
+    // Fall back to default if git command fails
+  }
   return `${repoPath}/.git/hooks`;
 }
