@@ -10,6 +10,7 @@ interface Petal {
   ry: number;
   rotation: number;
   opacity: number;
+  color: string;
 }
 
 interface AccentDot {
@@ -107,10 +108,9 @@ export default function BloomReveal() {
     [dimensions.width, dimensions.height]
   );
 
-  const bgColor = "#2C1810";
-  const petalColor = "#F5E6D3";
+  const bgColor = "#1C1C2E";
 
-  const revealRadius = 200;
+  const revealRadius = 250;
   const maskStyle: React.CSSProperties = mousePos
     ? {
         maskImage: `radial-gradient(circle ${revealRadius}px at ${mousePos.x}px ${mousePos.y}px, black 0%, black 30%, transparent 100%)`,
@@ -154,7 +154,7 @@ export default function BloomReveal() {
                 rx={p.rx}
                 ry={p.ry}
                 transform={`rotate(${p.rotation} ${p.cx} ${p.cy})`}
-                fill={petalColor}
+                fill={p.color}
                 opacity={p.opacity}
               />
             ))}
@@ -192,21 +192,35 @@ function generateBloomArt(
 
   const goldenAngle = Math.PI * (3 - Math.sqrt(5));
 
-  // Accent dot colors — warm earthy tones
-  const dotColors = ["#C4593E", "#D4763A", "#5B7C4F", "#4A7C8F", "#E8A820"];
+  // Vibrant petal palette — bold pops of color on dark background
+  const petalColors = [
+    "#FF6B4A", // coral red
+    "#4A90D9", // bright blue
+    "#FFD166", // sunny yellow
+    "#06D6A0", // mint green
+    "#EF476F", // hot pink
+    "#118AB2", // ocean blue
+    "#F78C6B", // peach
+    "#83C5BE", // seafoam
+    "#FFB5A7", // blush pink
+    "#B8B8FF", // lavender
+  ];
 
-  // Generate several flower clusters spread across the full page
-  const clusterCount = 16;
+  // Accent dot colors — vivid pops
+  const dotColors = ["#FFD166", "#EF476F", "#06D6A0", "#FF6B4A", "#4A90D9"];
+
+  // Generate many flower clusters spread densely across the full page
+  const clusterCount = 24;
   for (let c = 0; c < clusterCount; c++) {
     const angle = c * goldenAngle + rand() * 0.5;
-    const spiralRadius = Math.min(width, height) * 0.1 + (c / clusterCount) * Math.min(width, height) * 0.4;
+    const spiralRadius = Math.min(width, height) * 0.05 + (c / clusterCount) * Math.min(width, height) * 0.5;
     const cx = width / 2 + Math.cos(angle) * spiralRadius * (width / height);
     const cy = height / 2 + Math.sin(angle) * spiralRadius * 0.8;
 
     // Intensity varies per cluster
-    const intensity = 0.4 + rand() * 0.6;
-    const petalCount = Math.floor(3 + intensity * 5);
-    const basePetalLength = 30 + intensity * 60;
+    const intensity = 0.5 + rand() * 0.5;
+    const petalCount = Math.floor(4 + intensity * 6);
+    const basePetalLength = 35 + intensity * 65;
     const basePetalWidth = basePetalLength * (0.25 + rand() * 0.15);
 
     for (let p = 0; p < petalCount; p++) {
@@ -225,7 +239,8 @@ function generateBloomArt(
         rx: basePetalLength * sizeVar,
         ry: basePetalWidth * sizeVar,
         rotation,
-        opacity: 0.7 + rand() * 0.3,
+        opacity: 0.75 + rand() * 0.25,
+        color: petalColors[Math.floor(rand() * petalColors.length)],
       });
     }
 
@@ -243,7 +258,7 @@ function generateBloomArt(
   }
 
   // Add scattered standalone petals for organic edge coverage
-  const scatterCount = 8 + Math.floor(rand() * 6);
+  const scatterCount = 14 + Math.floor(rand() * 8);
   for (let i = 0; i < scatterCount; i++) {
     const ex = rand() * width;
     const ey = rand() * height;
@@ -255,7 +270,8 @@ function generateBloomArt(
       rx: length,
       ry: length * (0.2 + rand() * 0.15),
       rotation: rand() * 360,
-      opacity: 0.5 + rand() * 0.3,
+      opacity: 0.65 + rand() * 0.3,
+      color: petalColors[Math.floor(rand() * petalColors.length)],
     });
   }
 
