@@ -93,10 +93,10 @@ const SENSITIVE_PATTERNS_MCP = [
   /(?:export\s+)?(?:[\w]+(?:TOKEN|SECRET|KEY|PASSWORD|PASS|PWD|CREDENTIAL|AUTH|API_KEY|ACCESS_KEY|PRIVATE_KEY))\s*=/i,
   /--(?:token|password|secret|key|auth|credential|api-key|access-key)\s+\S+/i,
   /-H\s+["']?Authorization:\s+(?:Bearer|Basic|Token)\s+\S+/i,
-  /ssh-(?:keygen|add|copy-id)/,
-  /gpg\s+--(?:import|export|sign)/,
-  /docker\s+login/,
-  /aws\s+(?:configure|sts)/,
+  /ssh-(?:keygen|add|copy-id)/i,
+  /gpg\s+--(?:import|export|sign)/i,
+  /docker\s+login/i,
+  /aws\s+(?:configure|sts)/i,
 ];
 
 const BLOCKED_COMMANDS_MCP = [

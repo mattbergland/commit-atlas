@@ -65,7 +65,7 @@ export default function LandingPage() {
         {/* Bloom art reveal layer — hidden until cursor hovers */}
         <BloomReveal />
 
-        <div className="mx-auto max-w-2xl w-full text-center space-y-10 relative z-10">
+        <div className="mx-auto max-w-2xl w-full text-center space-y-10 relative z-10 bg-background/85 backdrop-blur-sm rounded-2xl px-8 py-12">
           {/* Tagline */}
           <div className="space-y-4">
             <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground font-medium">

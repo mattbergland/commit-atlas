@@ -12,13 +12,13 @@ const SENSITIVE_PATTERNS = [
   // curl/wget with auth headers
   /-H\s+["']?Authorization:\s+(?:Bearer|Basic|Token)\s+\S+/i,
   // SSH key operations
-  /ssh-(?:keygen|add|copy-id)/,
+  /ssh-(?:keygen|add|copy-id)/i,
   // GPG operations
-  /gpg\s+--(?:import|export|sign)/,
+  /gpg\s+--(?:import|export|sign)/i,
   // Docker login
-  /docker\s+login/,
+  /docker\s+login/i,
   // AWS credentials
-  /aws\s+(?:configure|sts)/,
+  /aws\s+(?:configure|sts)/i,
   // Base64-encoded strings (likely secrets) — require trailing = padding to avoid matching file paths
   /(?:^|[\s='"])(?:[A-Za-z0-9+/]{40,}={1,2})(?:[\s'")]|$)/,
 ];

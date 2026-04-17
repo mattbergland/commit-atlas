@@ -3,6 +3,9 @@
  * Installs a post-commit hook that captures commit metadata and detects agents.
  */
 
+import { execSync } from "node:child_process";
+import { resolve } from "node:path";
+
 /** Generate the post-commit hook script content */
 export function generatePostCommitHook(): string {
   return `#!/bin/sh
@@ -47,7 +50,6 @@ commit-atlas log \\
 /** Get the git hooks directory path for a repo, respecting core.hooksPath */
 export function getGitHooksDir(repoPath: string): string {
   try {
-    const { execSync } = require("node:child_process");
     const hooksPath = execSync("git rev-parse --git-path hooks", {
       cwd: repoPath,
       encoding: "utf-8",
@@ -55,7 +57,6 @@ export function getGitHooksDir(repoPath: string): string {
     if (hooksPath) {
       // git rev-parse --git-path returns a path relative to the repo root
       // if core.hooksPath is not absolute
-      const { resolve } = require("node:path");
       return resolve(repoPath, hooksPath);
     }
   } catch {
