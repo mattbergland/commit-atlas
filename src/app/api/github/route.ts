@@ -114,7 +114,7 @@ async function fetchUserProfile(
     };
     if (token) headers.Authorization = `bearer ${token}`;
 
-    const res = await fetch(`${GITHUB_REST}/users/${username}`, { headers });
+    const res = await fetch(`${GITHUB_REST}/users/${encodeURIComponent(username)}`, { headers });
     if (!res.ok) return null;
     const data = await res.json();
 
@@ -160,7 +160,7 @@ async function fetchTopLanguages(
     if (token) headers.Authorization = `bearer ${token}`;
 
     const res = await fetch(
-      `${GITHUB_REST}/users/${username}/repos?per_page=100&sort=updated`,
+      `${GITHUB_REST}/users/${encodeURIComponent(username)}/repos?per_page=100&sort=updated`,
       { headers }
     );
     if (!res.ok) return [];
@@ -198,7 +198,7 @@ async function scrapeContributions(
   totalContributions: number;
 } | null> {
   try {
-    const url = `https://github.com/users/${username}/contributions?from=${year}-01-01&to=${year}-12-31`;
+    const url = `https://github.com/users/${encodeURIComponent(username)}/contributions?from=${year}-01-01&to=${year}-12-31`;
     const res = await fetch(url, {
       headers: { Accept: "text/html" },
     });
