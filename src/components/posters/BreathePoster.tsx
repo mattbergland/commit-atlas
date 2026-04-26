@@ -211,7 +211,7 @@ export default function BreathePoster({ data, config }: BreathePosterProps) {
       {/* Title — bottom left, bold */}
       <text
         x={marginX}
-        y={height * 0.88}
+        y={height * 0.84}
         fontFamily="'Geist', 'Helvetica Neue', Arial, sans-serif"
         fontSize={size === "18x24" ? 48 : 42}
         fontWeight={800}
@@ -224,7 +224,7 @@ export default function BreathePoster({ data, config }: BreathePosterProps) {
       {/* Subtitle / metadata — bottom right */}
       <text
         x={width - marginX}
-        y={height * 0.895}
+        y={height * 0.855}
         textAnchor="end"
         fontFamily="'Geist Mono', 'Courier New', monospace"
         fontSize={12}
@@ -240,9 +240,9 @@ export default function BreathePoster({ data, config }: BreathePosterProps) {
         <g>
           <line
             x1={marginX}
-            y1={height * 0.93}
+            y1={height * 0.89}
             x2={width - marginX}
-            y2={height * 0.93}
+            y2={height * 0.89}
             stroke={palette.metadata}
             strokeWidth={0.5}
             opacity={0.3}
@@ -259,7 +259,7 @@ export default function BreathePoster({ data, config }: BreathePosterProps) {
               <g key={`stat-${i}`}>
                 <text
                   x={x}
-                  y={height * 0.955}
+                  y={height * 0.91}
                   textAnchor="middle"
                   fontFamily="'Geist Mono', 'Courier New', monospace"
                   fontSize={12}
@@ -270,7 +270,7 @@ export default function BreathePoster({ data, config }: BreathePosterProps) {
                 </text>
                 <text
                   x={x}
-                  y={height * 0.975}
+                  y={height * 0.93}
                   textAnchor="middle"
                   fontFamily="'Geist Mono', 'Courier New', monospace"
                   fontSize={7}
@@ -293,14 +293,14 @@ export default function BreathePoster({ data, config }: BreathePosterProps) {
             const spacing = 100;
             const startX = width / 2 - ((totalLangs - 1) * spacing) / 2;
             const x = startX + i * spacing;
-            const y = height * 0.955;
+            const langY = config.showStats ? height * 0.955 : height * 0.91;
 
             return (
               <g key={`lang-${i}`}>
-                <circle cx={x - 14} cy={y - 3} r={4} fill={lang.color} />
+                <circle cx={x - 14} cy={langY - 3} r={4} fill={lang.color} />
                 <text
                   x={x - 6}
-                  y={y}
+                  y={langY}
                   fontFamily="'Geist Mono', 'Courier New', monospace"
                   fontSize={9}
                   fill={palette.metadata}
