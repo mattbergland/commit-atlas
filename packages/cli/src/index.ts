@@ -61,6 +61,7 @@ program
   .option("--cwd <path>", "Working directory")
   .option("--exit-code <code>", "Command exit code")
   .option("--message <msg>", "Commit message (for agent detection)")
+  .option("--message-file <path>", "Read commit message from file (for agent detection)")
   .option("--quiet", "Suppress output")
   .action(async (options) => {
     await logCommand(options);

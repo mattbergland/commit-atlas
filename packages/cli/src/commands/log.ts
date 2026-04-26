@@ -3,6 +3,7 @@
  * Manually log an activity event or record CLI-tracked events.
  */
 
+import { readFileSync } from "node:fs";
 import chalk from "chalk";
 import {
   addEvent,
@@ -28,6 +29,7 @@ interface LogOptions {
   cwd?: string;
   exitCode?: string;
   message?: string;
+  messageFile?: string;
   quiet?: boolean;
 }
 
@@ -39,6 +41,15 @@ export async function logCommand(options: LogOptions): Promise<void> {
       console.log(chalk.yellow("  Tracking is disabled. Run `commit-atlas init` to enable."));
     }
     return;
+  }
+
+  // Read message from file if --message-file was provided
+  if (!options.message && options.messageFile) {
+    try {
+      options.message = readFileSync(options.messageFile, "utf-8").trim();
+    } catch {
+      // If file can't be read, continue without message
+    }
   }
 
   // Determine the command to log
