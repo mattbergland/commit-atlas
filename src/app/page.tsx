@@ -3,7 +3,8 @@
 import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { parseUsername } from "@/lib/username";
-import { ArrowRight, Sparkles, Mountain, Grid3X3, Route, Map } from "lucide-react";
+import { ArrowRight, Sparkles, Mountain, Grid3X3, Route, Map, Shapes, CircleDot, Music, Flower2, Wind, Search, Palette, Download } from "lucide-react";
+import BloomReveal from "@/components/BloomReveal";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -60,8 +61,11 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <main className="flex-1 flex flex-col items-center justify-center px-6 pb-20">
-        <div className="mx-auto max-w-2xl w-full text-center space-y-10">
+      <main className="flex-1 flex flex-col items-center justify-center px-6 pb-20 relative">
+        {/* Bloom art reveal layer — hidden until cursor hovers */}
+        <BloomReveal />
+
+        <div className="mx-auto max-w-2xl w-full text-center space-y-10 relative z-10 bg-background/85 backdrop-blur-sm rounded-2xl px-8 py-12">
           {/* Tagline */}
           <div className="space-y-4">
             <p className="text-xs tracking-[0.3em] uppercase text-muted-foreground font-medium">
@@ -168,43 +172,164 @@ export default function LandingPage() {
             Or try with demo data
           </button>
 
-          {/* Style previews */}
-          <div className="pt-8 grid grid-cols-4 gap-6 max-w-xl mx-auto">
-            {[
-              {
-                icon: <Mountain className="w-5 h-5" />,
-                label: "Horizon",
-                desc: "Layered landscape",
-              },
-              {
-                icon: <Grid3X3 className="w-5 h-5" />,
-                label: "Grid Modern",
-                desc: "Geometric blocks",
-              },
-              {
-                icon: <Route className="w-5 h-5" />,
-                label: "Path",
-                desc: "Journey line",
-              },
-              {
-                icon: <Map className="w-5 h-5" />,
-                label: "Atlas",
-                desc: "Topographic map",
-              },
-            ].map((style) => (
-              <div
-                key={style.label}
-                className="text-center space-y-2 text-muted-foreground"
-              >
-                <div className="mx-auto w-12 h-12 rounded-lg border border-border flex items-center justify-center">
-                  {style.icon}
+          {/* How It Works */}
+          <div className="pt-16 space-y-8">
+            <div className="space-y-2">
+              <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground font-medium">
+                How it works
+              </p>
+              <h2 className="text-xl font-semibold tracking-tight">
+                Three simple steps
+              </h2>
+            </div>
+            <div className="grid grid-cols-3 gap-8">
+              {[
+                {
+                  step: "1",
+                  icon: <Search className="w-5 h-5" />,
+                  title: "Enter your GitHub",
+                  desc: "Paste a profile URL or username. We fetch your contribution history automatically.",
+                },
+                {
+                  step: "2",
+                  icon: <Palette className="w-5 h-5" />,
+                  title: "Customize your poster",
+                  desc: "Choose from 9 art styles and 11 palettes. Adjust text, stats, and agent activity.",
+                },
+                {
+                  step: "3",
+                  icon: <Download className="w-5 h-5" />,
+                  title: "Export & print",
+                  desc: "Download as high-res PNG or PDF. Print-ready at 300 DPI.",
+                },
+              ].map((item) => (
+                <div key={item.step} className="text-center space-y-3">
+                  <div className="mx-auto w-12 h-12 rounded-full bg-foreground/5 border border-border flex items-center justify-center text-foreground">
+                    {item.icon}
+                  </div>
+                  <p className="text-sm font-semibold text-foreground">
+                    {item.title}
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {item.desc}
+                  </p>
                 </div>
-                <p className="text-xs font-medium text-foreground">
-                  {style.label}
-                </p>
-                <p className="text-[11px]">{style.desc}</p>
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+
+          {/* Style previews */}
+          <div className="pt-16 space-y-8">
+            <div className="space-y-2">
+              <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground font-medium">
+                9 poster styles
+              </p>
+              <h2 className="text-xl font-semibold tracking-tight">
+                Art-first, data-driven
+              </h2>
+            </div>
+            <div className="grid grid-cols-4 gap-4">
+              {[
+                {
+                  icon: <Mountain className="w-5 h-5" />,
+                  label: "Horizon",
+                  desc: "Layered landscape",
+                },
+                {
+                  icon: <Grid3X3 className="w-5 h-5" />,
+                  label: "Grid Modern",
+                  desc: "Geometric blocks",
+                },
+                {
+                  icon: <Route className="w-5 h-5" />,
+                  label: "Path",
+                  desc: "Journey line",
+                },
+                {
+                  icon: <Map className="w-5 h-5" />,
+                  label: "Atlas",
+                  desc: "Topographic map",
+                },
+                {
+                  icon: <Shapes className="w-5 h-5" />,
+                  label: "Fragments",
+                  desc: "Bauhaus shapes",
+                },
+                {
+                  icon: <CircleDot className="w-5 h-5" />,
+                  label: "Concerto",
+                  desc: "Curved forms",
+                },
+                {
+                  icon: <Music className="w-5 h-5" />,
+                  label: "Rhythm",
+                  desc: "Circle & line",
+                },
+                {
+                  icon: <Flower2 className="w-5 h-5" />,
+                  label: "Bloom",
+                  desc: "Organic petals",
+                },
+                {
+                  icon: <Wind className="w-5 h-5" />,
+                  label: "Breathe",
+                  desc: "Expand & contract",
+                },
+              ].map((style) => (
+                <div
+                  key={style.label}
+                  className="text-center space-y-2 text-muted-foreground"
+                >
+                  <div className="mx-auto w-12 h-12 rounded-lg border border-border flex items-center justify-center">
+                    {style.icon}
+                  </div>
+                  <p className="text-xs font-medium text-foreground">
+                    {style.label}
+                  </p>
+                  <p className="text-[11px]">{style.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Example poster gallery */}
+          <div className="pt-16 space-y-8">
+            <div className="space-y-2">
+              <p className="text-xs tracking-[0.2em] uppercase text-muted-foreground font-medium">
+                Examples
+              </p>
+              <h2 className="text-xl font-semibold tracking-tight">
+                See what&apos;s possible
+              </h2>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {[
+                { variant: "horizon", palette: "Desert Dusk", user: "octocat" },
+                { variant: "fragments", palette: "Bauhaus Red", user: "torvalds" },
+                { variant: "atlas", palette: "Nordic Frost", user: "gaearon" },
+                { variant: "rhythm", palette: "Bauhaus Blue", user: "sindresorhus" },
+              ].map((example) => (
+                <button
+                  key={example.variant}
+                  onClick={handleDemo}
+                  className="group relative aspect-[3/4] rounded-lg border border-border overflow-hidden cursor-pointer hover:border-foreground/30 transition-all hover:shadow-lg"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-muted/30 to-muted/80 flex items-center justify-center">
+                    <div className="text-center space-y-1">
+                      <p className="text-xs font-semibold text-foreground capitalize">
+                        {example.variant}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground">
+                        {example.palette}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="absolute bottom-2 left-0 right-0 text-center">
+                    <span className="text-[10px] text-muted-foreground/70">Click to try demo</span>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </main>

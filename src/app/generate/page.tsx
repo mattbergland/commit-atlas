@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import Link from "next/link";
@@ -9,6 +9,7 @@ import {
   PosterConfig,
   GitHubApiResponse,
 } from "@/types/github";
+import type { AgentStats } from "@/lib/commit-analysis";
 import { PALETTES } from "@/lib/palettes";
 import { generateMockData } from "@/lib/mock-data";
 import { filterByMonth, calculateLongestStreak, calculateCurrentStreak } from "@/lib/streaks";
@@ -16,6 +17,8 @@ import { exportToPng, exportToPdf } from "@/lib/export";
 import PosterRenderer from "@/components/posters/PosterRenderer";
 import PosterControls from "@/components/PosterControls";
 import { ArrowLeft, Loader2, AlertCircle, Sparkles } from "lucide-react";
+
+const VARIANT_ORDER: PosterConfig["variant"][] = ["horizon", "grid", "path", "atlas", "fragments", "concerto", "rhythm", "bloom", "breathe"];
 
 function GeneratePageInner() {
   const searchParams = useSearchParams();
@@ -29,7 +32,8 @@ function GeneratePageInner() {
   const [error, setError] = useState<string | null>(null);
   const [isDemo, setIsDemo] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [hasFetched, setHasFetched] = useState(false);
+  const [userAgentStats, setUserAgentStats] = useState<AgentStats | null>(null);
+  const [hasUserSelectedVariant, setHasUserSelectedVariant] = useState(false);
 
   const posterRef = useRef<HTMLDivElement>(null);
 
@@ -41,6 +45,10 @@ function GeneratePageInner() {
     subtitle: "",
     showStats: true,
     showLanguages: true,
+    showAgentMetadata: true,
+    sourceFilter: "all",
+    includeAgentActivity: true,
+    includeCliActivity: true,
   });
 
   const fetchData = useCallback(async () => {
@@ -49,8 +57,6 @@ function GeneratePageInner() {
 
     setLoading(true);
     setError(null);
-    setHasFetched(true);
-
     if (demoParam && !username) {
       const year = parseInt(yearParam);
       const month = monthParam ? parseInt(monthParam) : undefined;
@@ -169,6 +175,28 @@ function GeneratePageInner() {
     }
   };
 
+  // Auto-cycle poster variants until user selects one
+  useEffect(() => {
+    if (hasUserSelectedVariant || !githubData) return;
+    const interval = setInterval(() => {
+      setConfig((prev) => {
+        const currentIdx = VARIANT_ORDER.indexOf(prev.variant);
+        const nextIdx = (currentIdx + 1) % VARIANT_ORDER.length;
+        return { ...prev, variant: VARIANT_ORDER[nextIdx] };
+      });
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [hasUserSelectedVariant, githubData]);
+
+  const handleVariantSelect = (variant: PosterConfig["variant"]) => {
+    setHasUserSelectedVariant(true);
+    setConfig((prev) => ({ ...prev, variant }));
+  };
+
+  const handleAgentStatsChange = (stats: AgentStats | null) => {
+    setUserAgentStats(stats);
+  };
+
   const handleSaveConfig = () => {
     const configJson = JSON.stringify(
       {
@@ -252,12 +280,36 @@ function GeneratePageInner() {
             {/* Poster preview */}
             <div className="lg:col-span-8 flex items-start justify-center">
               {githubData && (
-                <div className="w-full max-w-[600px] sticky top-8">
-                  <PosterRenderer
-                    ref={posterRef}
-                    data={githubData}
-                    config={config}
-                  />
+                <div className="w-full max-w-[600px] sticky top-8 space-y-4">
+                  <div className="rounded-sm shadow-[0_8px_30px_rgba(0,0,0,0.12)] ring-1 ring-black/5 overflow-hidden">
+                    <PosterRenderer
+                      ref={posterRef}
+                      data={githubData}
+                      config={config}
+                    />
+                  </div>
+
+                  {/* Agent stats summary */}
+                  {(userAgentStats || githubData.agentStats)?.agentCommits != null &&
+                    (userAgentStats || githubData.agentStats)!.agentCommits > 0 && (
+                    <div className="rounded-lg border border-border bg-card p-4 text-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <span className="font-medium text-xs tracking-widest uppercase text-muted-foreground">
+                          {userAgentStats ? "Agent Stats" : "Agent Activity Detected"}
+                        </span>
+                      </div>
+                      <div className="space-y-2">
+                        {(userAgentStats || githubData.agentStats)!.agentBreakdown.map((agent) => (
+                          <div key={agent.agent} className="flex items-center justify-between">
+                            <span className="text-foreground">{agent.label}</span>
+                            <span className="text-muted-foreground tabular-nums">
+                              {agent.count} session{agent.count !== 1 ? "s" : ""}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
               {loading && !githubData && (
@@ -279,6 +331,10 @@ function GeneratePageInner() {
                       onExportPdf={handleExportPdf}
                       onSaveConfig={handleSaveConfig}
                       isExporting={isExporting}
+                      agentStats={userAgentStats || githubData?.agentStats || null}
+                      onAgentStatsChange={handleAgentStatsChange}
+                      onVariantSelect={handleVariantSelect}
+                      isCycling={!hasUserSelectedVariant}
                     />
                   </div>
                 </div>

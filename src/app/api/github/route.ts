@@ -5,6 +5,7 @@ import {
   calculateCurrentStreak,
   countActiveDays,
 } from "@/lib/streaks";
+import { analyzeCommits } from "@/lib/commit-analysis";
 
 const GITHUB_GRAPHQL = "https://api.github.com/graphql";
 const GITHUB_REST = "https://api.github.com";
@@ -289,8 +290,11 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  // Fetch top languages
-  const topLanguages = await fetchTopLanguages(username, token);
+  // Fetch top languages (and analyze commits only when token is available to avoid rate limits)
+  const [topLanguages, agentStats] = await Promise.all([
+    fetchTopLanguages(username, token),
+    token ? analyzeCommits(username, year, token) : Promise.resolve({ totalAnalyzed: 0, agentCommits: 0, humanCommits: 0, agentBreakdown: [], detectedPatterns: [] }),
+  ]);
 
   const data: GitHubData = {
     username,
@@ -305,6 +309,7 @@ export async function GET(request: NextRequest) {
     topLanguages,
     year,
     month,
+    agentStats: agentStats.totalAnalyzed > 0 ? agentStats : undefined,
   };
 
   return NextResponse.json<GitHubApiResponse>({

@@ -230,34 +230,33 @@ export default function HorizonPoster({ data, config }: HorizonPosterProps) {
         </g>
       )}
 
-      {/* Language bar */}
+      {/* Language legend */}
       {config.showLanguages && data.topLanguages.length > 0 && (
         <g>
-          {(() => {
-            const barY = height * 0.96;
-            const barHeight = 3;
-            const barStart = width * 0.08;
-            const barWidth = width * 0.84;
-            let currentX = barStart;
+          {data.topLanguages.map((lang, i) => {
+            const totalLangs = data.topLanguages.length;
+            const spacing = 100;
+            const startX = width / 2 - ((totalLangs - 1) * spacing) / 2;
+            const x = startX + i * spacing;
+            const y = height * 0.96;
 
-            return data.topLanguages.map((lang, i) => {
-              const w = (lang.percentage / 100) * barWidth;
-              const x = currentX;
-              currentX += w;
-              return (
-                <rect
-                  key={`lang-${i}`}
-                  x={x}
-                  y={barY}
-                  width={w}
-                  height={barHeight}
-                  fill={lang.color}
+            return (
+              <g key={`lang-${i}`}>
+                <circle cx={x - 14} cy={y - 3} r={4} fill={lang.color} />
+                <text
+                  x={x - 6}
+                  y={y}
+                  fontFamily="'Geist Mono', 'Courier New', monospace"
+                  fontSize={9}
+                  fill={palette.background}
                   opacity={0.8}
-                  rx={i === 0 ? 1.5 : 0}
-                />
-              );
-            });
-          })()}
+                  letterSpacing="0.03em"
+                >
+                  {lang.name}
+                </text>
+              </g>
+            );
+          })}
         </g>
       )}
 

@@ -1,12 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { PosterConfig, PosterVariant, PosterSize } from "@/types/github";
 import { PALETTES } from "@/lib/palettes";
+import { SOURCE_FILTER_OPTIONS } from "@/types/activity";
+import type { ActivitySource } from "@/types/activity";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Layers, Grid3X3, Route, Map } from "lucide-react";
+import { Layers, Grid3X3, Route, Map, Shapes, CircleDot, Music, Flower2, Wind, ChevronDown } from "lucide-react";
+import AgentStatsInput from "@/components/AgentStatsInput";
+import type { AgentStats } from "@/lib/commit-analysis";
 
 interface PosterControlsProps {
   config: PosterConfig;
@@ -15,13 +20,22 @@ interface PosterControlsProps {
   onExportPdf: () => void;
   onSaveConfig: () => void;
   isExporting: boolean;
+  agentStats: AgentStats | null;
+  onAgentStatsChange: (stats: AgentStats | null) => void;
+  onVariantSelect?: (variant: PosterVariant) => void;
+  isCycling?: boolean;
 }
 
-const VARIANT_OPTIONS: { value: PosterVariant; label: string; icon: React.ReactNode; desc: string }[] = [
-  { value: "horizon", label: "Horizon", icon: <Layers className="w-4 h-4" />, desc: "Layered landscape" },
-  { value: "grid", label: "Grid Modern", icon: <Grid3X3 className="w-4 h-4" />, desc: "Geometric blocks" },
-  { value: "path", label: "Path", icon: <Route className="w-4 h-4" />, desc: "Journey line" },
-  { value: "atlas", label: "Atlas", icon: <Map className="w-4 h-4" />, desc: "Topographic map" },
+const VARIANT_OPTIONS: { value: PosterVariant; label: string; icon: React.ReactNode; desc: string; tooltip: string }[] = [
+  { value: "horizon", label: "Horizon", icon: <Layers className="w-4 h-4" />, desc: "Layered landscape", tooltip: "Mountain layers = weekly contribution intensity. Taller peaks = more active weeks. The sun position reflects your longest streak." },
+  { value: "grid", label: "Grid Modern", icon: <Grid3X3 className="w-4 h-4" />, desc: "Geometric blocks", tooltip: "Each colored square = one day. Size and opacity map to commit count. Read left-to-right, top-to-bottom like a calendar heatmap." },
+  { value: "path", label: "Path", icon: <Route className="w-4 h-4" />, desc: "Journey line", tooltip: "The winding line traces your contribution journey through the year. Dots mark high-activity days. Denser sections = sustained streaks." },
+  { value: "atlas", label: "Atlas", icon: <Map className="w-4 h-4" />, desc: "Topographic map", tooltip: "Contour lines form a topographic map of your code output. Peaks = most productive periods. Concentric rings = consistent effort." },
+  { value: "fragments", label: "Fragments", icon: <Shapes className="w-4 h-4" />, desc: "Bauhaus shapes", tooltip: "Each shape represents a month of contributions. Shape size = total commits. Accent-colored shapes = your most active months." },
+  { value: "concerto", label: "Concerto", icon: <CircleDot className="w-4 h-4" />, desc: "Curved forms", tooltip: "Quarter-circle arcs compose a visual rhythm. Arc size maps to weekly activity. Interlocking forms show consistency across months." },
+  { value: "rhythm", label: "Rhythm", icon: <Music className="w-4 h-4" />, desc: "Circle & line", tooltip: "Circles on a grid represent individual days. Circle size = commit count for that day. Rows = weeks, columns = days of the week." },
+  { value: "bloom", label: "Bloom", icon: <Flower2 className="w-4 h-4" />, desc: "Organic petals", tooltip: "Overlapping leaf shapes cluster into flowers. Petal size = monthly contribution volume. Colored dots mark peak activity periods." },
+  { value: "breathe", label: "Breathe", icon: <Wind className="w-4 h-4" />, desc: "Expand & contract", tooltip: "Two columns of shapes expand and contract like breathing. Shape size = contribution intensity. One column inhales while the other exhales." },
 ];
 
 const SIZE_OPTIONS: { value: PosterSize; label: string }[] = [
@@ -36,7 +50,13 @@ export default function PosterControls({
   onExportPdf,
   onSaveConfig,
   isExporting,
+  agentStats,
+  onAgentStatsChange,
+  onVariantSelect,
+  isCycling,
 }: PosterControlsProps) {
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
   const update = (partial: Partial<PosterConfig>) => {
     onChange({ ...config, ...partial });
   };
@@ -48,14 +68,15 @@ export default function PosterControls({
         <Label className="text-xs font-medium tracking-widest uppercase text-muted-foreground">
           Style
         </Label>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4 gap-2 sm:grid-cols-4">
           {VARIANT_OPTIONS.map((opt) => (
             <button
               key={opt.value}
-              onClick={() => update({ variant: opt.value })}
+              onClick={() => onVariantSelect ? onVariantSelect(opt.value) : update({ variant: opt.value })}
+              title={opt.tooltip}
               className={`flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs transition-all cursor-pointer ${
                 config.variant === opt.value
-                  ? "border-foreground bg-foreground/5 text-foreground"
+                  ? `border-foreground bg-foreground/5 text-foreground${isCycling ? " animate-pulse" : ""}`
                   : "border-border text-muted-foreground hover:border-foreground/30"
               }`}
             >
@@ -159,29 +180,93 @@ export default function PosterControls({
 
       <Separator />
 
-      {/* Toggles */}
-      <div className="space-y-3">
-        <Label className="text-xs font-medium tracking-widest uppercase text-muted-foreground">
-          Display
-        </Label>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Show stats</span>
-            <Switch
-              checked={config.showStats}
-              onCheckedChange={(checked) => update({ showStats: checked })}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">
-              Show languages
-            </span>
-            <Switch
-              checked={config.showLanguages}
-              onCheckedChange={(checked) => update({ showLanguages: checked })}
-            />
-          </div>
+      {/* Agent Stats Input */}
+      <AgentStatsInput
+        onStatsChange={onAgentStatsChange}
+        currentStats={agentStats}
+      />
+
+      <Separator />
+
+      {/* Display Toggles — compact row */}
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Switch
+            id="show-stats"
+            checked={config.showStats}
+            onCheckedChange={(checked) => update({ showStats: checked })}
+          />
+          <label htmlFor="show-stats" className="text-xs text-muted-foreground cursor-pointer">Stats</label>
         </div>
+        <div className="flex items-center gap-2">
+          <Switch
+            id="show-langs"
+            checked={config.showLanguages}
+            onCheckedChange={(checked) => update({ showLanguages: checked })}
+          />
+          <label htmlFor="show-langs" className="text-xs text-muted-foreground cursor-pointer">Languages</label>
+        </div>
+      </div>
+
+      {/* Advanced — collapsible */}
+      <div>
+        <button
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer w-full"
+        >
+          <ChevronDown className={`w-3 h-3 transition-transform ${showAdvanced ? "rotate-180" : ""}`} />
+          Advanced options
+        </button>
+        {showAdvanced && (
+          <div className="mt-3 space-y-4">
+            {/* Activity Source Filter */}
+            <div className="space-y-2">
+              <Label className="text-[10px] font-medium tracking-widest uppercase text-muted-foreground">
+                Activity Source
+              </Label>
+              <div className="flex flex-wrap gap-1.5">
+                {SOURCE_FILTER_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => update({ sourceFilter: opt.value as ActivitySource | "all" })}
+                    className={`rounded-full px-2.5 py-0.5 text-[10px] transition-all cursor-pointer ${
+                      config.sourceFilter === opt.value
+                        ? "bg-foreground text-background font-medium"
+                        : "border border-border text-muted-foreground hover:border-foreground/30"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Additional toggles */}
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Agent metadata</span>
+                <Switch
+                  checked={config.showAgentMetadata}
+                  onCheckedChange={(checked) => update({ showAgentMetadata: checked })}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">Agent activity</span>
+                <Switch
+                  checked={config.includeAgentActivity}
+                  onCheckedChange={(checked) => update({ includeAgentActivity: checked })}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-muted-foreground">CLI activity</span>
+                <Switch
+                  checked={config.includeCliActivity}
+                  onCheckedChange={(checked) => update({ includeCliActivity: checked })}
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <Separator />

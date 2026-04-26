@@ -98,5 +98,19 @@ export function generateMockData(
       { name: "CSS", percentage: 10, color: "#563D7C" },
     ],
     year,
+    agentStats: {
+      totalAnalyzed: 87,
+      humanCommits: 64,
+      agentCommits: 23,
+      agentBreakdown: [
+        { agent: "claude_code", label: "Claude Code", count: 14 },
+        { agent: "devin", label: "Devin", count: 6 },
+        { agent: "cursor", label: "Cursor", count: 3 },
+      ],
+      detectedPatterns: [
+        "feat: add auth flow [claude]",
+        "Co-authored-by: Devin AI <devin@cognition.dev>",
+      ],
+    },
   };
 }

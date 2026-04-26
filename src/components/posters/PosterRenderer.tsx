@@ -6,6 +6,11 @@ import HorizonPoster from "./HorizonPoster";
 import GridPoster from "./GridPoster";
 import PathPoster from "./PathPoster";
 import AtlasPoster from "./AtlasPoster";
+import FragmentsPoster from "./FragmentsPoster";
+import ConcertoPoster from "./ConcertoPoster";
+import RhythmPoster from "./RhythmPoster";
+import BloomPoster from "./BloomPoster";
+import BreathePoster from "./BreathePoster";
 
 interface PosterRendererProps {
   data: GitHubData;
@@ -34,6 +39,11 @@ const PosterRenderer = forwardRef<HTMLDivElement, PosterRendererProps>(
         {variant === "grid" && <GridPoster data={data} config={config} />}
         {variant === "path" && <PathPoster data={data} config={config} />}
         {variant === "atlas" && <AtlasPoster data={data} config={config} />}
+        {variant === "fragments" && <FragmentsPoster data={data} config={config} />}
+        {variant === "concerto" && <ConcertoPoster data={data} config={config} />}
+        {variant === "rhythm" && <RhythmPoster data={data} config={config} />}
+        {variant === "bloom" && <BloomPoster data={data} config={config} />}
+        {variant === "breathe" && <BreathePoster data={data} config={config} />}
       </div>
     );
   }
