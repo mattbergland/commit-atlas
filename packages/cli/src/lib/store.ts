@@ -117,7 +117,7 @@ export function readEvents(): StoredEvent[] {
     if (raw.startsWith("[")) {
       return JSON.parse(raw) as StoredEvent[];
     }
-    return raw.split("\n").filter(Boolean).map((line) => JSON.parse(line) as StoredEvent);
+    return raw.split("\n").filter(Boolean).reduce<StoredEvent[]>((acc, line) => { try { acc.push(JSON.parse(line) as StoredEvent); } catch { /* skip corrupted line */ } return acc; }, []);
   } catch {
     return [];
   }

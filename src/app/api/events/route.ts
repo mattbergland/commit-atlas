@@ -107,13 +107,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Store validated events, evicting oldest when at capacity
+    // Store validated events, capping batch to MAX_EVENTS and evicting oldest
+    const toStore = validated.length > MAX_EVENTS ? validated.slice(-MAX_EVENTS) : validated;
     const spaceLeft = MAX_EVENTS - eventStore.length;
-    if (spaceLeft < validated.length) {
-      const evictCount = validated.length - spaceLeft;
+    if (spaceLeft < toStore.length) {
+      const evictCount = toStore.length - spaceLeft;
       eventStore.splice(0, evictCount);
     }
-    eventStore.push(...validated);
+    eventStore.push(...toStore);
 
     return NextResponse.json({
       success: true,
