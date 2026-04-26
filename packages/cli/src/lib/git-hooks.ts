@@ -20,10 +20,13 @@ fi
 
 # Get commit info
 COMMIT_HASH=$(git rev-parse HEAD)
-COMMIT_MSG=$(git log -1 --pretty=%B)
 AUTHOR=$(git log -1 --pretty="%an <%ae>")
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 REPO=$(basename "$(git rev-parse --show-toplevel)")
+
+# Write commit message to temp file to avoid shell injection
+COMMIT_MSG_FILE=$(mktemp)
+git log -1 --pretty=%B > "$COMMIT_MSG_FILE"
 
 # Get diff stats
 STATS=$(git diff --stat HEAD~1 HEAD 2>/dev/null || echo "0 files changed")
@@ -40,8 +43,11 @@ commit-atlas log \\
   --files-changed "$FILES_CHANGED" \\
   --additions "$ADDITIONS" \\
   --deletions "$DELETIONS" \\
-  --message "$COMMIT_MSG" \\
+  --message-file "$COMMIT_MSG_FILE" \\
   --quiet 2>/dev/null || true
+
+# Clean up
+rm -f "$COMMIT_MSG_FILE"
 
 # End Commit Atlas post-commit hook
 `;

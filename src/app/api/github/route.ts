@@ -290,10 +290,10 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  // Fetch top languages and analyze commits for agent usage in parallel
+  // Fetch top languages (and analyze commits only when token is available to avoid rate limits)
   const [topLanguages, agentStats] = await Promise.all([
     fetchTopLanguages(username, token),
-    analyzeCommits(username, year, token),
+    token ? analyzeCommits(username, year, token) : Promise.resolve({ totalAnalyzed: 0, agentCommits: 0, humanCommits: 0, agentBreakdown: [], detectedPatterns: [] }),
   ]);
 
   const data: GitHubData = {
